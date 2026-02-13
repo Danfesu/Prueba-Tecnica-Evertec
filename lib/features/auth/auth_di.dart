@@ -22,6 +22,6 @@ void initAuthFeature() {
   );
   // DataSources
   instance.registerLazySingleton<AuthGoogleDataSource>(
-    () => AuthFirebaseDatasource(),
+    () => AuthFirebaseDatasource(instance()),
   );
 }

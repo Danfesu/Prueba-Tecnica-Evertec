@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:evertec_technical_test/core/di/injector_container.dart';
 import 'package:evertec_technical_test/core/router/refresh_stream.dart';
 import 'package:evertec_technical_test/core/router/route_names.dart';
@@ -24,7 +22,6 @@ final appRouter = GoRouter(
 
     final authState = instance<AuthCubit>().state;
     final isLogginIn = state.fullPath == RoutePaths.login;
-    log(state.fullPath ?? '');
 
     final isAAuthUnauthenticated = authState.mapOrNull(
       unauthenticated: (_) => true,
