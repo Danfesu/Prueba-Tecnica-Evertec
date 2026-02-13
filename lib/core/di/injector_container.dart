@@ -1,3 +1,4 @@
+import 'package:evertec_technical_test/core/http/api_client.dart';
 import 'package:evertec_technical_test/core/storage/secure_storage_service.dart';
 import 'package:evertec_technical_test/core/storage/secure_storage_service_impl.dart';
 import 'package:evertec_technical_test/features/auth/auth_di.dart';
@@ -13,6 +14,7 @@ class InjectorContainer {
     instance.registerLazySingleton<SecureStorageService>(
       () => SecureStorageServiceImpl(instance()),
     );
+    instance.registerLazySingleton(() => ApiClient());
     // Aquí se registrarían las dependencias globales
     initAuthFeature();
   }
