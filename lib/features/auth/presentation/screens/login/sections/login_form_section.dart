@@ -8,6 +8,7 @@ import 'package:evertec_technical_test/features/shared/widgets/no_implemented.da
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
+// Sección del formulario de login, con validaciones personalizadas para email y password
 class LoginFormSection extends StatefulWidget {
   const LoginFormSection({super.key});
 
@@ -22,6 +23,7 @@ class _LoginFormSectionState extends State<LoginFormSection> {
 
   @override
   Widget build(BuildContext context) {
+    // Configuración de los campos del formulario de login, con validadores personalizados
     final List<FormItem> configurationFormLogin = [
       FormItemString(
         name: "email",
@@ -47,6 +49,7 @@ class _LoginFormSectionState extends State<LoginFormSection> {
       ),
     ];
 
+    // Función para manejar el submit del formulario, validando los campos
     void onSubmit() {
       _formKey.currentState?.save();
       if (!_formKey.currentState!.validate()) {
@@ -84,6 +87,7 @@ class _LoginFormSectionState extends State<LoginFormSection> {
     );
   }
 
+  // Función para mostrar los errores de validación de la contraseña, indicando qué requisitos no se cumplen
   Widget _buildPasswordValidationErrors(
     List<String> errors,
     BuildContext context,
@@ -119,6 +123,7 @@ class _LoginFormSectionState extends State<LoginFormSection> {
     );
   }
 
+  // Función para construir un widget que muestre si un requisito de validación se cumple o no, con un ícono y mensaje correspondiente
   Widget _buildCheckError(
     bool isError,
     Color successColor,

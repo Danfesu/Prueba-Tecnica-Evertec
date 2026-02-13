@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// Widget para mostrar un diálogo de "Funcionalidad en construcción" cuando se intenta acceder a una funcionalidad no implementada
 class NoImplemented {
   static void showNotImplementedDialog(BuildContext context) {
     showDialog(

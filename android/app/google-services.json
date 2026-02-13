@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "319721210297",
+    "project_id": "evertec-project",
+    "storage_bucket": "evertec-project.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:319721210297:android:76da8c9f2cf3bf4eb6b668",
+        "android_client_info": {
+          "package_name": "com.example.evertec_technical_test"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "319721210297-60ktptuka2uqp1rkeq8jaaaqh143d58i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.evertec_technical_test",
+            "certificate_hash": "05ea05afa93b989be930f489e8285ac1ec7ad9ce"
+          }
+        },
+        {
+          "client_id": "319721210297-vfnid01dt4hr1nkv06mfpqfvuct21erb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVtPz1H6SfaxTg3JjraSP0v1O7vsiVHRQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "319721210297-vfnid01dt4hr1nkv06mfpqfvuct21erb.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "319721210297-dhu6189ip3h2ga35tbrm9mvmr3o945rr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.evertecTechnicalTest"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

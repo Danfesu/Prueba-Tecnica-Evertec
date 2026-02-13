@@ -1,11 +1,7 @@
 import 'package:evertec_technical_test/features/auth/presentation/screens/login/sections/login_form_section.dart';
+import 'package:evertec_technical_test/features/auth/presentation/screens/login/sections/login_or_continue_secion.dart';
 import 'package:evertec_technical_test/features/auth/presentation/screens/login/sections/login_top_section.dart';
-import 'package:evertec_technical_test/features/shared/form/Validators/custom_email_validator.dart';
-import 'package:evertec_technical_test/features/shared/form/Validators/custom_password_validation.dart';
-import 'package:evertec_technical_test/features/shared/form/form_items/form_item.dart';
-import 'package:evertec_technical_test/features/shared/form/form_items/form_item_string.dart';
 import 'package:flutter/material.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -21,8 +17,6 @@ class LoginScreen extends StatelessWidget {
   }
 
   Widget _buildContentLogin(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
     final size = MediaQuery.of(context).size;
 
     return Padding(
@@ -30,7 +24,13 @@ class LoginScreen extends StatelessWidget {
         horizontal: size.width * 0.05,
         vertical: size.height * 0.08,
       ),
-      child: Column(children: [LoginTopSection(), LoginFormSection()]),
+      child: Column(
+        children: [
+          LoginTopSection(),
+          LoginFormSection(),
+          LoginOrContinueSecion(),
+        ],
+      ),
     );
   }
 }

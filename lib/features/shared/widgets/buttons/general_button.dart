@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// Widget de botón general, con estilo personalizado y que recibe el texto y la función a ejecutar al presionar el botón
 class GeneralButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
