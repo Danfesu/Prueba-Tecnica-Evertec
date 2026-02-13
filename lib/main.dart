@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       title: "Evertec Prueba Técnica",
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.light,
       routerConfig: appRouter,
     );
   }
