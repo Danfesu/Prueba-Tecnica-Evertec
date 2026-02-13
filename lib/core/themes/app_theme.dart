@@ -1,10 +1,15 @@
+import 'package:evertec_technical_test/core/themes/app_text_theme.dart';
 import 'package:flutter/material.dart';
 
 // Definición de los temas de la aplicación
 class AppTheme {
   // Método privado para construir el tema a partir de un esquema de colores
   static ThemeData _buildTheme(ColorScheme colorScheme) {
-    return ThemeData(useMaterial3: true, colorScheme: colorScheme);
+    return ThemeData(
+      useMaterial3: true,
+      colorScheme: colorScheme,
+      textTheme: AppTextTheme.baseTextTheme(colorScheme),
+    );
   }
 
   // Temas claros de la aplicación utilizando el método de construcción
