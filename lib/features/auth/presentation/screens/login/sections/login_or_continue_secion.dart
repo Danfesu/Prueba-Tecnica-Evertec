@@ -1,7 +1,7 @@
 import 'package:evertec_technical_test/features/auth/presentation/cubits/auth_cubit.dart';
 import 'package:evertec_technical_test/features/auth/presentation/widgets/buttons/other_login_button.dart';
+import 'package:evertec_technical_test/features/shared/extesions/error_extensions.dart';
 import 'package:evertec_technical_test/features/shared/widgets/divider/divider_with_message.dart';
-import 'package:evertec_technical_test/features/shared/widgets/no_implemented.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -22,7 +22,7 @@ class LoginOrContinueSecion extends StatelessWidget {
             icon: Icons.language_outlined,
             text: "Google",
             onPressed: () async {
-              context.read<AuthCubit>().singInGoogle();
+              context.read<AuthCubit>().loginWithGoogle(context);
             },
           ),
         ),
@@ -37,7 +37,12 @@ class LoginOrContinueSecion extends StatelessWidget {
             ),
             GestureDetector(
               onTap: () {
-                NoImplemented.showNotImplementedDialog(context);
+                //NoImplemented.showNotImplementedDialog(context);
+                context.showErrorDialog(
+                  "Sin conexion",
+                  "Revisa tu internet y vuleve a intentarlo",
+                  () {},
+                );
               },
               child: Text(
                 'Registrate',

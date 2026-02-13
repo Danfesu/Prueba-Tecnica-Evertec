@@ -1,32 +1,41 @@
 import 'package:evertec_technical_test/features/auth/domain/usecases/sing_in_google.dart';
 import 'package:evertec_technical_test/features/auth/domain/usecases/sing_out.dart';
 import 'package:evertec_technical_test/features/auth/presentation/cubits/auth_state.dart';
+import 'package:evertec_technical_test/features/shared/extesions/error_extensions.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AuthCubit extends Cubit<AuthState> {
-  final SingInGoogle singInGoogle;
-  final SingOut singOut;
+  final SingInGoogle _singInGoogle;
+  final SingOut _singOut;
 
-  AuthCubit(this.singInGoogle, this.singOut) : super(AuthState.initial());
+  AuthCubit(this._singInGoogle, this._singOut) : super(AuthState.initial());
 
-  void loginWithGoogle() async {
+  void loginWithGoogle(BuildContext context) async {
     emit(AuthState.loading());
 
     try {
-      final user = await singInGoogle();
-      emit(AuthState.authenticated(user: user));
+      await _singInGoogle();
     } catch (e) {
-      emit(AuthState.error(message: e.toString()));
+      emit(AuthState.error(message: "Error al cargar"));
+      context.showErrorDialog(
+        "Sin conexion",
+        "Revisa tu internet y vuleve a intentarlo",
+        () {
+          loginWithGoogle(context);
+        },
+      );
+      return;
     }
   }
 
   void logout() async {
     emit(AuthState.loading());
     try {
-      await singOut();
-      emit(AuthState.unauthenticated());
+      await _singOut();
     } catch (e) {
-      emit(AuthState.error(message: e.toString()));
+      emit(AuthState.error(message: "Error al cerrar sesión"));
+      return;
     }
   }
 

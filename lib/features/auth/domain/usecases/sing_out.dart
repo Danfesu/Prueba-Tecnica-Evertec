@@ -7,6 +7,6 @@ class SingOut {
   SingOut(this.repository);
 
   Future<void> call() async {
-    await repository.signOut();
+    return repository.signOut();
   }
 }
