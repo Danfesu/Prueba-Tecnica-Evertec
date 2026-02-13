@@ -1,3 +1,4 @@
+// Definición de las rutas de la aplicación
 class RoutePaths {
   static const String splash = '/splash';
   static const String login = '/login';
