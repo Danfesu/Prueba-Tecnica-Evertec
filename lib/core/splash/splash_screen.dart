@@ -1,10 +1,20 @@
+import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'package:evertec_technical_test/features/auth/presentation/screens/login_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Center(child: Text('Splash Screen')));
+    return AnimatedSplashScreen(
+      centered: true,
+      duration: 2000,
+      splashTransition: SplashTransition.fadeTransition,
+      splashIconSize: 200,
+      splash: Lottie.asset("assets/animations/splash_animation.json"),
+      nextScreen: const LoginScreen(),
+    );
   }
 }
