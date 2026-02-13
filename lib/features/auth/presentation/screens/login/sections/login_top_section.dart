@@ -10,7 +10,7 @@ class LoginTopSection extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     return Column(
       children: [
-        SizedBox(height: size.height * 0.08, width: double.infinity),
+        SizedBox(width: double.infinity),
         Container(
           padding: EdgeInsets.all(20.0),
           decoration: BoxDecoration(
@@ -34,7 +34,7 @@ class LoginTopSection extends StatelessWidget {
           ),
           child: Icon(Icons.terminal_outlined, color: colors.primary, size: 30),
         ),
-        SizedBox(height: size.height * 0.01),
+        SizedBox(height: size.height * 0.02),
         Text(
           "Bienvenido",
           style: textTheme.headlineMedium?.copyWith(

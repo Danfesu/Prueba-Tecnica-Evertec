@@ -1,13 +1,12 @@
 import 'package:evertec_technical_test/features/shared/form/Validators/builder/validator_string_builder.dart';
 
 // Clase para validar una contraseña válida (mínimo 8 caracteres, al menos una mayúscula, un número y un símbolo)
-class PasswordValidation {
+class CustomPasswordValidation {
   static String? Function(String?)? validate({
     String? regex,
     String? errorMessage,
   }) {
     return ValidatorStringBuilder()
-        .requiredField('Campo requerido')
         .regex(
           regex ??
               r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',
@@ -21,7 +20,10 @@ class PasswordValidation {
     final errors = <String>[];
 
     if (value == null || value.isEmpty) {
-      errors.add('Required');
+      errors.add('mayus');
+      errors.add('number');
+      errors.add('symbol');
+      errors.add('minLength');
       return errors;
     }
 

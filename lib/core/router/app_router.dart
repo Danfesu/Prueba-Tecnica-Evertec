@@ -1,7 +1,7 @@
 import 'package:evertec_technical_test/core/router/route_names.dart';
 import 'package:evertec_technical_test/core/router/route_paths.dart';
 import 'package:evertec_technical_test/core/splash/splash_screen.dart';
-import 'package:evertec_technical_test/features/auth/presentation/screens/login_screen.dart';
+import 'package:evertec_technical_test/features/auth/presentation/screens/login/login_screen.dart';
 import 'package:evertec_technical_test/features/home/presentation/screens/detail_screen.dart';
 import 'package:evertec_technical_test/features/home/presentation/screens/home_screen.dart';
 import 'package:evertec_technical_test/features/settings/presentation/screens/settings_screem.dart';
