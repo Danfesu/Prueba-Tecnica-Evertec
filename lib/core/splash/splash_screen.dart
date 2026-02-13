@@ -3,6 +3,7 @@ import 'package:evertec_technical_test/features/auth/presentation/screens/login_
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
+// Pantalla de splash screen con animación Lottie (primera pantalla que se muestra al iniciar la aplicación)
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
 
@@ -11,6 +12,7 @@ class SplashScreen extends StatelessWidget {
     return AnimatedSplashScreen(
       centered: true,
       duration: 2000,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       splashTransition: SplashTransition.fadeTransition,
       splashIconSize: 200,
       splash: Lottie.asset("assets/animations/splash_animation.json"),
