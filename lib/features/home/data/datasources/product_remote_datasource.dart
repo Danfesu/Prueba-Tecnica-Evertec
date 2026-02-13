@@ -3,15 +3,15 @@ import 'package:evertec_technical_test/features/home/data/mappers/product_mapper
 import 'package:evertec_technical_test/features/home/data/models/product_models.dart';
 import 'package:evertec_technical_test/features/home/domain/entities/product.dart';
 
-abstract class ProductsRemoteRepository {
+abstract class ProductsRemoteDatasource {
   Future<List<Product>> getAllProducts();
   Future<Product?> getProductById(int id);
 }
 
-class ProductRemoteRepositoryImpl implements ProductsRemoteRepository {
+class ProductRemoteDatasourceImpl implements ProductsRemoteDatasource {
   final ApiClient apiClient;
 
-  ProductRemoteRepositoryImpl(this.apiClient);
+  ProductRemoteDatasourceImpl(this.apiClient);
 
   @override
   Future<List<Product>> getAllProducts() async {

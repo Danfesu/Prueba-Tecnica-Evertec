@@ -1,4 +1,3 @@
-import 'package:evertec_technical_test/core/errors/server_exception.dart';
 import 'package:evertec_technical_test/features/auth/data/datasources/auth_credentials_datasource.dart';
 import 'package:evertec_technical_test/features/auth/data/datasources/auth_datasource.dart';
 import 'package:evertec_technical_test/features/auth/domain/entities/app_user.dart';
@@ -17,7 +16,7 @@ class AuthRepositoryImpl extends AuthRepository {
     try {
       return await datasource.signInWithGoogle();
     } catch (e) {
-      throw ServerException();
+      throw Exception();
     }
   }
 
@@ -26,7 +25,7 @@ class AuthRepositoryImpl extends AuthRepository {
     try {
       await datasource.signOut();
     } catch (e) {
-      throw ServerException();
+      throw Exception();
     }
   }
 
@@ -35,7 +34,7 @@ class AuthRepositoryImpl extends AuthRepository {
     try {
       return await credentialsDataSource.signInWithCredential(email, password);
     } catch (e) {
-      throw ServerException();
+      throw Exception();
     }
   }
 }

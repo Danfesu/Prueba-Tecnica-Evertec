@@ -1,20 +1,22 @@
 import 'package:evertec_technical_test/core/databases/app_database.dart';
+import 'package:evertec_technical_test/core/errors/exceptions.dart';
 import 'package:evertec_technical_test/features/home/domain/entities/product.dart';
 
 import 'package:drift/drift.dart';
 
 abstract class ProductLocalDataSource {
   Future<List<Product>> getCachedProducts();
+  Future<Product?> getCachedProductById(int id);
   Future<void> cacheProducts(List<Product> products);
   Future<bool> hasCachedData();
   Future<void> clearCache();
 }
 
-class ProductsLocalDataSourceImpl implements ProductLocalDataSource {
+class ProductsLocalDataSourceImpl extends ProductLocalDataSource {
   final AppDatabase database;
   static const String cacheKey = 'products_cache';
 
-  ProductsLocalDataSourceImpl({required this.database});
+  ProductsLocalDataSourceImpl(this.database);
 
   @override
   Future<List<Product>> getCachedProducts() async {
@@ -22,13 +24,12 @@ class ProductsLocalDataSourceImpl implements ProductLocalDataSource {
       final postEntities = await database.getAllProducts();
 
       if (postEntities.isEmpty) {
-        //throw CacheException('No hay datos en caché');
+        throw CacheException('No hay datos en caché');
       }
 
       return postEntities.map((entity) => _fromEntity(entity)).toList();
     } catch (e) {
-      //throw CacheException('Error al obtener datos del caché: $e');
-      rethrow;
+      throw CacheException('Error al obtener datos del caché: $e');
     }
   }
 
@@ -44,7 +45,7 @@ class ProductsLocalDataSourceImpl implements ProductLocalDataSource {
           .toList();
       await database.insertProducts(companions);
     } catch (e) {
-      //throw CacheException('Error al guardar en caché: $e');
+      throw CacheException('Error al guardar en caché: $e');
     }
   }
 
@@ -62,7 +63,7 @@ class ProductsLocalDataSourceImpl implements ProductLocalDataSource {
     try {
       await database.clearAllProducts();
     } catch (e) {
-      //throw CacheException('Error al limpiar caché: $e');
+      throw CacheException('Error al limpiar caché: $e');
     }
   }
 
@@ -95,5 +96,20 @@ class ProductsLocalDataSourceImpl implements ProductLocalDataSource {
       depth: Value(model.depth),
       imageUrl: Value(model.imageUrl),
     );
+  }
+
+  @override
+  Future<Product?> getCachedProductById(int id) async {
+    try {
+      final product = await database.getProductById(id);
+
+      if (product == null) {
+        throw CacheException('No hay datos en caché');
+      }
+
+      return _fromEntity(product);
+    } catch (e) {
+      throw CacheException('Error al obtener datos del caché: $e');
+    }
   }
 }

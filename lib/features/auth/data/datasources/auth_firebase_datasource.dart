@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:evertec_technical_test/core/config/constants/environments.dart';
-import 'package:evertec_technical_test/core/errors/server_exception.dart';
 import 'package:evertec_technical_test/core/storage/secure_storage_service.dart';
 import 'package:evertec_technical_test/features/auth/data/datasources/auth_datasource.dart';
 import 'package:evertec_technical_test/features/auth/domain/entities/app_user.dart';
@@ -43,7 +42,7 @@ class AuthFirebaseDatasource extends AuthGoogleDataSource {
     } on GoogleSignInException {
       throw const SocketException("No internet connection");
     } on FirebaseException {
-      throw ServerException();
+      throw Exception("Firebase authentication error");
     } catch (e) {
       rethrow;
     }

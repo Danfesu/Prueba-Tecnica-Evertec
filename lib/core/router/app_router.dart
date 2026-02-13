@@ -6,9 +6,11 @@ import 'package:evertec_technical_test/core/splash/splash_screen.dart';
 import 'package:evertec_technical_test/features/auth/presentation/cubits/auth_cubit.dart';
 import 'package:evertec_technical_test/features/auth/presentation/cubits/auth_state.dart';
 import 'package:evertec_technical_test/features/auth/presentation/screens/login/login_screen.dart';
+import 'package:evertec_technical_test/features/home/presentation/cubits/products/products_cubit.dart';
 import 'package:evertec_technical_test/features/home/presentation/screens/detail_screen.dart';
 import 'package:evertec_technical_test/features/home/presentation/screens/home_screen.dart';
 import 'package:evertec_technical_test/features/settings/presentation/screens/settings_screem.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 // Router de la aplicación con GoRouter
@@ -58,7 +60,10 @@ final appRouter = GoRouter(
     GoRoute(
       path: RoutePaths.home,
       name: RouteNames.home.name,
-      builder: (context, state) => const HomeScreen(),
+      builder: (context, state) => BlocProvider(
+        create: (_) => InjectorContainer.instance<ProductsCubit>(),
+        child: const HomeScreen(),
+      ),
     ),
     // Ruta de detalle
     GoRoute(
