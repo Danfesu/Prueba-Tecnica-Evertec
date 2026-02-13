@@ -1,3 +1,4 @@
+import 'package:evertec_technical_test/features/auth/presentation/cubits/auth_cubit.dart';
 import 'package:evertec_technical_test/features/shared/form/Validators/custom_email_validator.dart';
 import 'package:evertec_technical_test/features/shared/form/Validators/custom_password_validation.dart';
 import 'package:evertec_technical_test/features/shared/form/custom_form_general.dart';
@@ -6,6 +7,7 @@ import 'package:evertec_technical_test/features/shared/form/form_items/form_item
 import 'package:evertec_technical_test/features/shared/widgets/buttons/general_button.dart';
 import 'package:evertec_technical_test/features/shared/widgets/no_implemented.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 // Sección del formulario de login, con validaciones personalizadas para email y password
@@ -55,7 +57,10 @@ class _LoginFormSectionState extends State<LoginFormSection> {
       if (!_formKey.currentState!.validate()) {
         return;
       }
-      // TODO: Implementar lógica de autenticación aquí
+      context.read<AuthCubit>().loginWithCredentials(
+        _formKey.currentState!.value["email"],
+        _formKey.currentState!.value["password"],
+      );
     }
 
     return Padding(
