@@ -1,6 +1,7 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
-import 'package:evertec_technical_test/features/auth/presentation/screens/login/login_screen.dart';
+import 'package:evertec_technical_test/features/auth/presentation/cubits/auth_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 
 // Pantalla de splash screen con animación Lottie (primera pantalla que se muestra al iniciar la aplicación)
@@ -16,7 +17,12 @@ class SplashScreen extends StatelessWidget {
       splashTransition: SplashTransition.fadeTransition,
       splashIconSize: 200,
       splash: Lottie.asset("assets/animations/splash_animation.json"),
-      nextScreen: const LoginScreen(),
+      nextScreen: Builder(
+        builder: (context) {
+          context.read<AuthCubit>().logout();
+          return SizedBox.shrink();
+        },
+      ),
     );
   }
 }

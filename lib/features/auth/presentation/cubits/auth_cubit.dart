@@ -15,7 +15,8 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthState.loading());
 
     try {
-      await _singInGoogle();
+      final user = await _singInGoogle();
+      emit(AuthState.authenticated(user: user));
     } catch (e) {
       emit(AuthState.error(message: "Error al cargar"));
       context.showErrorDialog(
@@ -33,6 +34,7 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthState.loading());
     try {
       await _singOut();
+      emit(AuthState.unauthenticated());
     } catch (e) {
       emit(AuthState.error(message: "Error al cerrar sesión"));
       return;
