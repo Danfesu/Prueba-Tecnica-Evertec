@@ -4,8 +4,12 @@ import 'package:flutter/material.dart';
 // Definición de los temas de la aplicación
 class AppTheme {
   // Método privado para construir el tema a partir de un esquema de colores
-  static ThemeData _buildTheme(ColorScheme colorScheme) {
+  static ThemeData _buildTheme(
+    ColorScheme colorScheme,
+    Color scaffoldBackgroundColor,
+  ) {
     return ThemeData(
+      scaffoldBackgroundColor: scaffoldBackgroundColor,
       useMaterial3: true,
       colorScheme: colorScheme,
       textTheme: AppTextTheme.baseTextTheme(colorScheme),
@@ -25,12 +29,13 @@ class AppTheme {
       tertiary: Colors.green,
       onTertiary: Colors.grey,
     ),
+    const Color(0xFFF8FAFC),
   );
 
   // Temas oscuros de la aplicación utilizando el método de construcción
   static final ThemeData darkTheme = _buildTheme(
     const ColorScheme.dark(
-      primary: Color(0xFFC5CAE9),
+      primary: Color(0xFF4A90E2),
       secondary: Color(0xFF80CBC4),
       surface: Color(0xFF1E1E1E),
       error: Color(0xFFCF6679),
@@ -40,5 +45,6 @@ class AppTheme {
       tertiary: Colors.green,
       onTertiary: Colors.grey,
     ),
+    Color(0xFF0F171E),
   );
 }

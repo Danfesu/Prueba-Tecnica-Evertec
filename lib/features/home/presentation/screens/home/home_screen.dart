@@ -1,6 +1,7 @@
 import 'package:evertec_technical_test/features/home/domain/entities/product.dart';
 import 'package:evertec_technical_test/features/home/presentation/cubits/products/products_cubit.dart';
 import 'package:evertec_technical_test/features/home/presentation/cubits/products/products_state.dart';
+import 'package:evertec_technical_test/features/home/presentation/screens/home/sections/carrusel_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -12,38 +13,17 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       body: BlocBuilder<ProductsCubit, ProductsState>(
         builder: (context, state) {
+          final colors = Theme.of(context).colorScheme;
+          final textheme = Theme.of(context).textTheme;
+          final size = MediaQuery.of(context).size;
           return state.when(
             initial: () => SizedBox.shrink(),
             loading: () => Center(child: CircularProgressIndicator()),
             loaded: (products, isOffline, isFromCache) => Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Productos cargados: ${products.length}'),
-                  if (isOffline)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: Text(
-                        'Modo Offline',
-                        style: TextStyle(
-                          color: Colors.redAccent,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  if (isFromCache)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: Text(
-                        'Datos desde Caché',
-                        style: TextStyle(
-                          color: Colors.orangeAccent,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                ],
-              ),
+              child: SafeArea(child: CustomScrollView(slivers: [
+                    
+                  ],
+                )),
             ),
             syncing: (products) => _buildSyncingState(products),
             error: (error, isOffline) => _buildErrorState(
