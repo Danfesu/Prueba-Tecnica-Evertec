@@ -1,4 +1,5 @@
 import 'package:evertec_technical_test/core/router/app_router.dart';
+import 'package:evertec_technical_test/core/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -14,6 +15,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: "Evertec Prueba Técnica",
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: ThemeMode.dark,
       routerConfig: appRouter,
     );
   }
