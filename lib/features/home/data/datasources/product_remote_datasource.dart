@@ -1,0 +1,41 @@
+import 'package:evertec_technical_test/core/http/api_client.dart';
+import 'package:evertec_technical_test/features/home/data/mappers/product_mapper.dart';
+import 'package:evertec_technical_test/features/home/data/models/product_models.dart';
+import 'package:evertec_technical_test/features/home/domain/entities/product.dart';
+
+abstract class ProductsRemoteDatasource {
+  Future<List<Product>> getAllProducts();
+  Future<Product?> getProductById(int id);
+}
+
+class ProductRemoteDatasourceImpl implements ProductsRemoteDatasource {
+  final ApiClient apiClient;
+
+  ProductRemoteDatasourceImpl(this.apiClient);
+
+  @override
+  Future<List<Product>> getAllProducts() async {
+    try {
+      final response = await apiClient.dio.get('/products');
+      final data = ProductModels.fromJson(response.data);
+      return data.products
+          .map((product) => ProductMapper.fromModel(product))
+          .toList();
+    } catch (e) {
+      // Manejo de errores
+      rethrow;
+    }
+  }
+
+  @override
+  Future<Product?> getProductById(int id) async {
+    try {
+      final response = await apiClient.dio.get('/products/$id');
+      final data = ProductModel.fromJson(response.data);
+      return ProductMapper.fromModel(data);
+    } catch (e) {
+      // Manejo de errores
+      rethrow;
+    }
+  }
+}

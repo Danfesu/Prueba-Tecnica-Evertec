@@ -6,15 +6,19 @@ import 'package:evertec_technical_test/core/splash/splash_screen.dart';
 import 'package:evertec_technical_test/features/auth/presentation/cubits/auth_cubit.dart';
 import 'package:evertec_technical_test/features/auth/presentation/cubits/auth_state.dart';
 import 'package:evertec_technical_test/features/auth/presentation/screens/login/login_screen.dart';
+import 'package:evertec_technical_test/features/home/presentation/cubits/products/products_cubit.dart';
 import 'package:evertec_technical_test/features/home/presentation/screens/detail_screen.dart';
-import 'package:evertec_technical_test/features/home/presentation/screens/home_screen.dart';
+import 'package:evertec_technical_test/features/home/presentation/screens/home/home_screen.dart';
+import 'package:evertec_technical_test/features/main_layout/presentation/cubits/layout_cubit.dart';
+import 'package:evertec_technical_test/features/main_layout/presentation/screens/main_layout.dart';
 import 'package:evertec_technical_test/features/settings/presentation/screens/settings_screem.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 // Router de la aplicación con GoRouter
 final appRouter = GoRouter(
-  initialLocation: RoutePaths.splash,
-  refreshListenable: GoRouterRefreshStream(
+  initialLocation: RoutePaths.home,
+  /* refreshListenable: GoRouterRefreshStream(
     InjectorContainer.instance<AuthCubit>().stream,
   ),
   redirect: (context, state) {
@@ -39,7 +43,7 @@ final appRouter = GoRouter(
     }
 
     return null;
-  },
+  }, */
   // Rutas principales de la aplicación
   routes: [
     // Ruta de splash screen
@@ -54,23 +58,36 @@ final appRouter = GoRouter(
       name: RouteNames.login.name,
       builder: (context, state) => const LoginScreen(),
     ),
-    // Ruta de home
-    GoRoute(
-      path: RoutePaths.home,
-      name: RouteNames.home.name,
-      builder: (context, state) => const HomeScreen(),
+    ShellRoute(
+      builder: (context, state, child) {
+        return BlocProvider(
+          create: (_) => InjectorContainer.instance<LayoutCubit>()..load(),
+          child: MainLayout(child: child),
+        );
+      },
+      routes: [
+        // Ruta de home
+        GoRoute(
+          path: RoutePaths.home,
+          name: RouteNames.home.name,
+          builder: (context, state) => BlocProvider(
+            create: (_) => InjectorContainer.instance<ProductsCubit>(),
+            child: const HomeScreen(),
+          ),
+        ),
+        // Ruta de configuración
+        GoRoute(
+          path: RoutePaths.settings,
+          name: RouteNames.settings.name,
+          builder: (context, state) => const SettingsScreen(),
+        ),
+      ],
     ),
     // Ruta de detalle
     GoRoute(
       path: RoutePaths.detail,
       name: RouteNames.detail.name,
       builder: (context, state) => const DetailScreen(),
-    ),
-    // Ruta de configuración
-    GoRoute(
-      path: RoutePaths.settings,
-      name: RouteNames.settings.name,
-      builder: (context, state) => const SettingsScreen(),
     ),
   ],
 );
