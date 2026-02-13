@@ -53,7 +53,7 @@ class AppTextTheme {
       labelLarge: TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.bold,
-        color: colorScheme.primary,
+        color: colorScheme.surface,
         letterSpacing: 1.25,
         textBaseline: TextBaseline.alphabetic,
       ),

@@ -22,6 +22,8 @@ class AppTheme {
       onPrimary: Colors.white,
       onSecondary: Colors.white,
       onSurface: Color(0xFF1C1B1F),
+      tertiary: Colors.green,
+      onTertiary: Colors.grey,
     ),
   );
 
@@ -35,6 +37,8 @@ class AppTheme {
       onPrimary: Color(0xFF121212),
       onSecondary: Color(0xFF121212),
       onSurface: Color(0xFFE6E1E5),
+      tertiary: Colors.green,
+      onTertiary: Colors.grey,
     ),
   );
 }
