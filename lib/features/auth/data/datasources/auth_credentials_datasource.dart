@@ -2,9 +2,6 @@ import 'package:evertec_technical_test/features/auth/domain/entities/app_user.da
 import 'package:evertec_technical_test/features/auth/domain/valueobjects/email_vo.dart';
 import 'package:evertec_technical_test/features/auth/domain/valueobjects/password.dart';
 
-// Repositorio de autenticación que define los métodos para iniciar sesión y cerrar sesión
-abstract class AuthRepository {
-  Future<AppUser> signInWithGoogle();
+abstract class AuthCredentialsDataSource {
   Future<AppUser> signInWithCredential(Email email, Password password);
-  Future<void> signOut();
 }
