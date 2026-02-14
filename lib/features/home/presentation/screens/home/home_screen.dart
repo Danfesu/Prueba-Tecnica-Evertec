@@ -4,6 +4,7 @@ import 'package:evertec_technical_test/features/home/presentation/cubits/product
 import 'package:evertec_technical_test/features/home/presentation/cubits/products/products_state.dart';
 import 'package:evertec_technical_test/features/home/presentation/screens/home/sections/carrusel_section.dart';
 import 'package:evertec_technical_test/features/home/presentation/screens/home/sections/sliver_grid_section.dart';
+import 'package:evertec_technical_test/features/shared/extesions/snackbar_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -13,7 +14,32 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocBuilder<ProductsCubit, ProductsState>(
+      body: BlocConsumer<ProductsCubit, ProductsState>(
+        listener: (context, state) {
+          state.maybeWhen(
+            loaded: (products, isOffline, isFromCache) {
+              if (isOffline && !isFromCache) {
+                // ESCENARIO 1: Sin conexión y sin datos
+                context.showOfflineSnackBar(
+                  onRetry: () => context.read<ProductsCubit>().retry(),
+                );
+              } else if (isOffline && isFromCache) {
+                // ESCENARIO 2: Sin conexión pero con datos
+                context.showOfflineSnackBar(
+                  onRetry: () =>
+                      context.read<ProductsCubit>().synchronizeProducts(),
+                );
+              } else if (!isOffline) {
+                // ESCENARIO 3: Volvió la conexión
+                context.hideSnackBar();
+              }
+            },
+            error: (message, isOffline) {
+              context.showError(message);
+            },
+            orElse: () {},
+          );
+        },
         builder: (context, state) {
           final colors = Theme.of(context).colorScheme;
           final textheme = Theme.of(context).textTheme;
@@ -111,7 +137,7 @@ class HomeScreen extends StatelessWidget {
                   children: [
                     CircularProgressIndicator(),
                     SizedBox(height: 16),
-                    Text('Sincronizando con Drift...'),
+                    Text('Conectando...'),
                   ],
                 ),
               ),
@@ -157,7 +183,7 @@ class HomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'No hay datos guardados en Drift',
+              'No hay datos alamcenados',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: Colors.grey.shade500,
