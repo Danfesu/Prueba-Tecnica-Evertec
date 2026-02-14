@@ -1,5 +1,8 @@
+import 'dart:ui';
+
 import 'package:evertec_technical_test/features/home/domain/entities/product.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class CarruselSection extends StatefulWidget {
   final List<Product> products;
@@ -19,7 +22,7 @@ class CarruselSection extends StatefulWidget {
 
 class _CarruselSectionState extends State<CarruselSection> {
   final PageController _pageController = PageController(
-    viewportFraction: 0.8, // Para mostrar un poco del siguiente card
+    viewportFraction: 0.75, // Para mostrar un poco del siguiente card
   );
 
   int _currentPage = 0;
@@ -45,182 +48,200 @@ class _CarruselSectionState extends State<CarruselSection> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-    return Container(
-      width: double.infinity,
-      height: 420,
-      child: Column(
-        children: [
-          // Título de la sección
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  'Tendencias',
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-                ),
-                TextButton(
-                  onPressed: () {},
-                  child: Text(
-                    'Ver todo',
-                    style: TextStyle(fontSize: 16, color: colors.primary),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
+    final size = MediaQuery.of(context).size;
+    return Column(
+      children: [
+        SizedBox(
+          height: size.height * 0.5,
+          child: PageView.builder(
+            controller: _pageController,
+            itemCount: widget.products.length,
+            itemBuilder: (context, index) {
+              return AnimatedBuilder(
+                animation: _pageController,
+                builder: (context, child) {
+                  double page = 0;
 
-          // Carrusel de productos
-          SizedBox(
-            height: 380,
-            child: PageView.builder(
-              controller: _pageController,
-              itemCount: widget.products.length,
-              itemBuilder: (context, index) {
-                return AnimatedBuilder(
-                  animation: _pageController,
-                  builder: (context, child) {
-                    double value = 1.0;
-                    if (_pageController.position.haveDimensions) {
-                      value = _pageController.page! - index;
-                      value = (1 - (value.abs() * 0.05)).clamp(0.0, 1.0);
-                    }
-                    return Center(
-                      child: SizedBox(
-                        height: Curves.easeOut.transform(value) * 380,
-                        child: child,
+                  if (_pageController.hasClients &&
+                      _pageController.position.haveDimensions) {
+                    page =
+                        _pageController.page ??
+                        _pageController.initialPage.toDouble();
+                  }
+
+                  final diff = page - index;
+                  final absDiff = diff.abs();
+
+                  // escala
+                  final scale = (1 - (absDiff * 0.1)).clamp(0.4, 1.0);
+
+                  // rotación hacia arriba
+                  final rotation = absDiff * (-0.8);
+
+                  // opacidad
+                  final opacity = (1 - (absDiff * 0.5)).clamp(0.3, 1.0);
+
+                  // blur - 🔥 Solución: usar ImageFilter en lugar del valor
+                  final blur = (absDiff * 5).clamp(0.0, 6.0);
+
+                  return Center(
+                    child: Transform(
+                      alignment: Alignment.center,
+                      transform: Matrix4.identity()
+                        ..setEntry(3, 2, 0.001) // perspectiva
+                        ..translateByDouble(
+                          0.0,
+                          absDiff * 20,
+                          -absDiff * 300, //🔥 profundidad Z
+                          1.0,
+                        )
+                        ..rotateX(rotation),
+                      child: Opacity(
+                        opacity: opacity,
+                        child: Transform.scale(
+                          scale: scale,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            // 🔥 Solución: Usar ImageFiltered en lugar de Stack
+                            child: blur > 0
+                                ? ImageFiltered(
+                                    imageFilter: ImageFilter.blur(
+                                      sigmaX: blur,
+                                      sigmaY: blur,
+                                      tileMode: TileMode.decal,
+                                    ),
+                                    child: child!,
+                                  )
+                                : child!,
+                          ),
+                        ),
                       ),
-                    );
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: _buildProductCard(widget.products[index]),
-                  ),
-                );
-              },
-            ),
+                    ),
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: _buildProductCard(widget.products[index]),
+                ),
+              );
+            },
           ),
-          const SizedBox(height: 16),
-
-          // Indicadores de página
-          Center(child: _buildPageIndicators()),
-        ],
-      ),
+        ),
+        SizedBox(height: 16),
+        _buildPageIndicators(),
+      ],
     );
   }
 
   Widget _buildProductCard(Product product) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
-        image: DecorationImage(
-          image: NetworkImage(product.imageUrl),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24),
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Colors.black.withValues(alpha: 0.3),
-              Colors.black.withValues(alpha: 0.8),
-            ],
+    final colors = Theme.of(context).colorScheme;
+    final textheme = Theme.of(context).textTheme;
+    final size = MediaQuery.of(context).size;
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(22),
+      child: BackdropFilter(
+        // 1. El filtro de desenfoque
+        filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+        child: Container(
+          margin: EdgeInsets.symmetric(horizontal: 16),
+          height: size.height * 0.45,
+          decoration: BoxDecoration(
+            // 2. Color blanco con baja opacidad
+            color: colors.onSurface.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(20),
+            // 3. Un borde sutil para definir el cristal
+            border: Border.all(
+              color: colors.onSurface.withValues(alpha: 0.2),
+              width: 1.5,
+            ),
           ),
-        ),
-        child: Stack(
-          children: [
-            // Card de información del producto
-            Positioned(
-              bottom: 20,
-              left: 20,
-              right: 20,
-              child: Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.95),
-                  borderRadius: BorderRadius.circular(20),
+          child: Column(
+            children: [
+              Expanded(child: Image.network(product.imageUrl)),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 10,
                 ),
-                child: Row(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          if (product.category == 'premium')
-                            const Text(
-                              'PREMIUM',
-                              style: TextStyle(
-                                color: Colors.blue,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 12,
-                                letterSpacing: 1,
-                              ),
-                            ),
-                          const SizedBox(height: 4),
-                          Text(
-                            product.title,
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            '\$${product.price.toStringAsFixed(2)}',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.grey[700],
-                            ),
-                          ),
-                        ],
+                    Text(
+                      product.category,
+                      style: textheme.bodySmall?.copyWith(
+                        color: colors.primary,
                       ),
                     ),
-                    Container(
-                      width: 56,
-                      height: 56,
-                      decoration: const BoxDecoration(
-                        color: Colors.blue,
-                        shape: BoxShape.circle,
+                    Text(
+                      product.title,
+                      style: textheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
                       ),
-                      child: const Icon(
-                        Icons.shopping_cart,
-                        color: Colors.white,
-                        size: 24,
+                    ),
+                    Text(
+                      NumberFormat.currency(
+                        locale: "es_CO",
+                        symbol: '\$',
+                      ).format(product.price),
+                      style: textheme.bodyMedium?.copyWith(
+                        color: colors.primary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(
+                      width: double.infinity,
+                      child: FilledButton.icon(
+                        onPressed: () {},
+                        label: Text("Ver detalle"),
+                        icon: Icon(Icons.visibility),
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget _buildPageIndicators() {
+    final total = widget.products.length;
+
+    int start = _currentPage - 1;
+    int end = start + 3;
+
+    if (start < 0) {
+      start = 0;
+      end = (total >= 4) ? 3 : total - 1;
+    }
+
+    if (end >= total) {
+      end = total - 1;
+      start = (total >= 4) ? total - 4 : 0;
+    }
+
+    final visibleIndexes = List.generate(end - start + 1, (i) => start + i);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(
-        widget.products.length,
-        (index) => AnimatedContainer(
+      children: visibleIndexes.map((index) {
+        final isActive = _currentPage == index;
+
+        return AnimatedContainer(
+          key: ValueKey(index), // 🔥 MUY IMPORTANTE
           duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
           margin: const EdgeInsets.symmetric(horizontal: 4),
-          width: _currentPage == index ? 32 : 8,
+          width: isActive ? 32 : 8,
           height: 8,
           decoration: BoxDecoration(
-            color: _currentPage == index ? Colors.blue : Colors.grey.shade300,
+            color: isActive ? Colors.blue : Colors.grey.shade300,
             borderRadius: BorderRadius.circular(4),
           ),
-        ),
-      ),
+        );
+      }).toList(),
     );
   }
 }
