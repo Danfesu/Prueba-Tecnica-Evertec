@@ -122,10 +122,6 @@ class HomeScreen extends StatelessWidget {
   Widget _buildSyncingState(List<Product> currentProducts) {
     return Stack(
       children: [
-        /* PostList(
-            posts: state.currentPosts,
-            onRefresh: () => context.read<PostCubit>().synchronizePosts(),
-          ), */
         Container(
           color: Colors.black.withValues(alpha: 0.3),
           child: const Center(

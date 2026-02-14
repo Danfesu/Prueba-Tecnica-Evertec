@@ -98,8 +98,8 @@ class _CarruselSectionState extends State<CarruselSection> {
                         ..translateByDouble(
                           0.0,
                           absDiff * 20,
-                          -absDiff * 300, // profundidad
-                          1.0,
+                          -absDiff * 80, // profundidad
+                          0.9,
                         )
                         ..rotateX(rotation),
                       child: Opacity(

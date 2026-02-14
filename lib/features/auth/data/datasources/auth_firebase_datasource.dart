@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:evertec_technical_test/core/config/constants/environments.dart';
-import 'package:evertec_technical_test/core/storage/secure_storage_service.dart';
+import 'package:evertec_technical_test/core/services/storage/secure_storage_service.dart';
 import 'package:evertec_technical_test/features/auth/data/datasources/auth_datasource.dart';
 import 'package:evertec_technical_test/features/auth/domain/entities/app_user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
