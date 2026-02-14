@@ -1,8 +1,12 @@
 import 'dart:ui';
 
-import 'package:evertec_technical_test/features/home/domain/entities/product.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:evertec_technical_test/core/router/route_names.dart';
+import 'package:evertec_technical_test/features/home/domain/entities/product_domain.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class CarruselSection extends StatefulWidget {
   final List<Product> products;
@@ -21,15 +25,16 @@ class CarruselSection extends StatefulWidget {
 }
 
 class _CarruselSectionState extends State<CarruselSection> {
-  final PageController _pageController = PageController(
-    viewportFraction: 0.75, // Para mostrar un poco del siguiente card
-  );
+  late PageController _pageController;
 
   int _currentPage = 0;
 
   @override
   void initState() {
     super.initState();
+    _pageController = PageController(
+      viewportFraction: 0.75, // Para mostrar un poco del siguiente card
+    );
     _pageController.addListener(() {
       int next = _pageController.page!.round();
       if (_currentPage != next) {
@@ -55,6 +60,7 @@ class _CarruselSectionState extends State<CarruselSection> {
           height: size.height * 0.5,
           child: PageView.builder(
             controller: _pageController,
+            physics: BouncingScrollPhysics(),
             itemCount: widget.products.length,
             itemBuilder: (context, index) {
               return AnimatedBuilder(
@@ -92,7 +98,7 @@ class _CarruselSectionState extends State<CarruselSection> {
                         ..translateByDouble(
                           0.0,
                           absDiff * 20,
-                          -absDiff * 300, //🔥 profundidad Z
+                          -absDiff * 300, // profundidad
                           1.0,
                         )
                         ..rotateX(rotation),
@@ -102,7 +108,7 @@ class _CarruselSectionState extends State<CarruselSection> {
                           scale: scale,
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(20),
-                            // 🔥 Solución: Usar ImageFiltered en lugar de Stack
+                            // ImageFiltered para
                             child: blur > 0
                                 ? ImageFiltered(
                                     imageFilter: ImageFilter.blur(
@@ -157,7 +163,17 @@ class _CarruselSectionState extends State<CarruselSection> {
           ),
           child: Column(
             children: [
-              Expanded(child: Image.network(product.imageUrl)),
+              Expanded(
+                child: CachedNetworkImage(
+                  imageUrl: product.imageUrl,
+                  fit: BoxFit.contain,
+                  placeholder: (context, url) => const SizedBox(),
+                  errorWidget: (context, url, error) => Image.asset(
+                    'assets/images/no_connection.jpg',
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20,
@@ -191,7 +207,13 @@ class _CarruselSectionState extends State<CarruselSection> {
                     SizedBox(
                       width: double.infinity,
                       child: FilledButton.icon(
-                        onPressed: () {},
+                        onPressed: () {
+                          _pageController.jumpToPage(_currentPage);
+                          context.goNamed(
+                            RouteNames.detail.name,
+                            pathParameters: {"id": product.id.toString()},
+                          );
+                        },
                         label: Text("Ver detalle"),
                         icon: Icon(Icons.visibility),
                       ),
@@ -207,41 +229,18 @@ class _CarruselSectionState extends State<CarruselSection> {
   }
 
   Widget _buildPageIndicators() {
-    final total = widget.products.length;
-
-    int start = _currentPage - 1;
-    int end = start + 3;
-
-    if (start < 0) {
-      start = 0;
-      end = (total >= 4) ? 3 : total - 1;
-    }
-
-    if (end >= total) {
-      end = total - 1;
-      start = (total >= 4) ? total - 4 : 0;
-    }
-
-    final visibleIndexes = List.generate(end - start + 1, (i) => start + i);
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: visibleIndexes.map((index) {
-        final isActive = _currentPage == index;
-
-        return AnimatedContainer(
-          key: ValueKey(index), // 🔥 MUY IMPORTANTE
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-          margin: const EdgeInsets.symmetric(horizontal: 4),
-          width: isActive ? 32 : 8,
-          height: 8,
-          decoration: BoxDecoration(
-            color: isActive ? Colors.blue : Colors.grey.shade300,
-            borderRadius: BorderRadius.circular(4),
-          ),
-        );
-      }).toList(),
+    return Center(
+      child: SmoothPageIndicator(
+        controller: _pageController,
+        count: widget.products.length,
+        effect: const ScrollingDotsEffect(
+          dotHeight: 8,
+          dotWidth: 8,
+          activeDotColor: Colors.blue,
+          dotColor: Colors.grey,
+          spacing: 8,
+        ),
+      ),
     );
   }
 }

@@ -3,7 +3,7 @@ import 'package:evertec_technical_test/core/errors/failures.dart';
 import 'package:evertec_technical_test/core/network/network_info.dart';
 import 'package:evertec_technical_test/features/home/data/datasources/product_remote_datasource.dart';
 import 'package:evertec_technical_test/features/home/data/datasources/products_local_datasorce.dart';
-import 'package:evertec_technical_test/features/home/domain/entities/product.dart';
+import 'package:evertec_technical_test/features/home/domain/entities/product_domain.dart';
 import 'package:evertec_technical_test/features/home/domain/repositories/products_repository.dart';
 import 'package:fpdart/fpdart.dart';
 

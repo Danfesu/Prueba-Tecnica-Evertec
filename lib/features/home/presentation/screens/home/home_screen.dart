@@ -1,4 +1,5 @@
-import 'package:evertec_technical_test/features/home/domain/entities/product.dart';
+import 'package:animate_do/animate_do.dart';
+import 'package:evertec_technical_test/features/home/domain/entities/product_domain.dart';
 import 'package:evertec_technical_test/features/home/presentation/cubits/products/products_cubit.dart';
 import 'package:evertec_technical_test/features/home/presentation/cubits/products/products_state.dart';
 import 'package:evertec_technical_test/features/home/presentation/screens/home/sections/carrusel_section.dart';
@@ -62,10 +63,12 @@ class HomeScreen extends StatelessWidget {
                             ],
                           ),
                         ),
-                        CarruselSection(
-                          products: products,
-                          isOffline: isOffline,
-                          isFromCache: isFromCache,
+                        FadeInRight(
+                          child: CarruselSection(
+                            products: products,
+                            isOffline: isOffline,
+                            isFromCache: isFromCache,
+                          ),
                         ),
                       ],
                     ),

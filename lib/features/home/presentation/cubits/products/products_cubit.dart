@@ -3,14 +3,12 @@ import 'dart:async';
 import 'package:evertec_technical_test/core/network/network_info.dart';
 import 'package:evertec_technical_test/features/home/data/datasources/products_local_datasorce.dart';
 import 'package:evertec_technical_test/features/home/domain/usecases/get_all_products.dart';
-import 'package:evertec_technical_test/features/home/domain/usecases/get_product_by_id.dart';
 import 'package:evertec_technical_test/features/home/domain/usecases/sync_products.dart';
 import 'package:evertec_technical_test/features/home/presentation/cubits/products/products_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProductsCubit extends Cubit<ProductsState> {
   final GetAllProducts getAllProducts;
-  final GetProductById getProductById;
   final SyncProducts syncProducts;
   final NetworkInfo networkInfo;
   final ProductLocalDataSource localDataSource;
@@ -19,7 +17,6 @@ class ProductsCubit extends Cubit<ProductsState> {
 
   ProductsCubit(
     this.getAllProducts,
-    this.getProductById,
     this.syncProducts,
     this.networkInfo,
     this.localDataSource,

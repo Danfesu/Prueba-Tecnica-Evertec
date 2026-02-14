@@ -143,7 +143,7 @@ class MainLayout extends StatelessWidget {
   PreferredSizeWidget _buidAppBar(BuildContext context) {
     return AppBar(
       forceMaterialTransparency: true,
-      title: Text("Billetera digital"),
+      title: Text("Productos"),
       leading: IconButton(
         onPressed: () {
           scaffoldKey.currentState?.openDrawer();

@@ -1,6 +1,6 @@
 import 'package:evertec_technical_test/core/databases/app_database.dart';
 import 'package:evertec_technical_test/core/errors/exceptions.dart';
-import 'package:evertec_technical_test/features/home/domain/entities/product.dart';
+import 'package:evertec_technical_test/features/home/domain/entities/product_domain.dart';
 
 import 'package:drift/drift.dart';
 
