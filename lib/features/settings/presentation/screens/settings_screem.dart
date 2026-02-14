@@ -3,6 +3,7 @@ import 'package:evertec_technical_test/features/settings/presentation/screens/se
 import 'package:evertec_technical_test/features/settings/presentation/screens/sections/settings_avatar.dart';
 import 'package:evertec_technical_test/features/settings/presentation/screens/sections/settings_options.dart';
 import 'package:evertec_technical_test/features/settings/presentation/screens/sections/settings_theme.dart';
+import 'package:evertec_technical_test/features/shared/extesions/snackbar_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -50,6 +51,7 @@ class SettingsScreen extends StatelessWidget {
   Widget _buildLogoutButton(BuildContext context) {
     return FilledButton.icon(
       onPressed: () {
+        context.hideSnackBar(); // limpiar snackbars
         context.read<AuthCubit>().logout();
       },
       label: Text("Cerrar sesión"),

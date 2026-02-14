@@ -1,4 +1,3 @@
-import 'package:evertec_technical_test/core/router/route_names.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -21,7 +20,7 @@ class _SettingsAppBarState extends State<SettingsAppBar> {
       backgroundColor: Colors.transparent,
       leading: IconButton(
         onPressed: () {
-          context.goNamed(RouteNames.home.name);
+          context.pop();
         },
         icon: Icon(Icons.arrow_back_ios),
       ),

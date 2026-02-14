@@ -19,18 +19,15 @@ class HomeScreen extends StatelessWidget {
           state.maybeWhen(
             loaded: (products, isOffline, isFromCache) {
               if (isOffline && !isFromCache) {
-                // ESCENARIO 1: Sin conexión y sin datos
                 context.showOfflineSnackBar(
                   onRetry: () => context.read<ProductsCubit>().retry(),
                 );
               } else if (isOffline && isFromCache) {
-                // ESCENARIO 2: Sin conexión pero con datos
                 context.showOfflineSnackBar(
                   onRetry: () =>
                       context.read<ProductsCubit>().synchronizeProducts(),
                 );
               } else if (!isOffline) {
-                // ESCENARIO 3: Volvió la conexión
                 context.hideSnackBar();
               }
             },
@@ -44,20 +41,22 @@ class HomeScreen extends StatelessWidget {
           final colors = Theme.of(context).colorScheme;
           final textheme = Theme.of(context).textTheme;
           final size = MediaQuery.of(context).size;
+
           return state.when(
-            initial: () => SizedBox.shrink(),
-            loading: () => Center(child: CircularProgressIndicator()),
+            initial: () => const SizedBox.shrink(),
+            loading: () => const Center(child: CircularProgressIndicator()),
             loaded: (products, isOffline, isFromCache) => CustomScrollView(
+              // 🔥 Agregar key al CustomScrollView
+              key: ValueKey('products-${products.length}'),
               slivers: [
-                // Carrusel Section
                 SliverToBoxAdapter(
                   child: Container(
-                    margin: EdgeInsets.only(top: 16),
+                    margin: const EdgeInsets.only(top: 16),
                     width: double.infinity,
                     height: size.height * 0.65,
                     decoration: BoxDecoration(
                       color: colors.primary.withValues(alpha: 0.03),
-                      borderRadius: BorderRadius.only(
+                      borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(32),
                         topRight: Radius.circular(32),
                       ),
@@ -75,11 +74,11 @@ class HomeScreen extends StatelessWidget {
                                 "Exclusivos",
                                 style: textheme.headlineMedium,
                               ),
-                              Spacer(),
+                              const Spacer(),
                               TextButton(
                                 onPressed: () {},
                                 child: Text(
-                                  "VER 24 ITEMS",
+                                  "VER ${products.length} ITEMS",
                                   style: textheme.bodyLarge?.copyWith(
                                     color: colors.primary,
                                     fontWeight: FontWeight.bold,
@@ -90,7 +89,15 @@ class HomeScreen extends StatelessWidget {
                           ),
                         ),
                         FadeInRight(
+                          // 🔥 Agregar key única para forzar reconstrucción
+                          key: ValueKey(
+                            'carrusel-${products.length}-${products.hashCode}',
+                          ),
                           child: CarruselSection(
+                            // 🔥 Agregar key basada en los productos
+                            key: ValueKey(
+                              'carrusel-products-${products.length}-${products.hashCode}',
+                            ),
                             products: products,
                             isOffline: isOffline,
                             isFromCache: isFromCache,
@@ -101,9 +108,14 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
 
-                // Grid Secion
-                SliverGridSection(products: products),
-                SliverToBoxAdapter(child: SizedBox(height: 40)),
+                // Grid Section
+                SliverGridSection(
+                  key: ValueKey(
+                    'grid-${products.length}',
+                  ), // 🔥 Key también aquí
+                  products: products,
+                ),
+                const SliverToBoxAdapter(child: SizedBox(height: 40)),
               ],
             ),
             syncing: (products) => _buildSyncingState(products),
@@ -179,7 +191,7 @@ class HomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'No hay datos alamcenados',
+              'No hay datos almacenados',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: Colors.grey.shade500,

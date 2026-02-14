@@ -39,7 +39,7 @@ class SliverGridSection extends StatelessWidget {
                   delay: Duration(microseconds: Random().nextInt(450) + 0),
                   child: GestureDetector(
                     onTap: () {
-                      context.goNamed(
+                      context.pushNamed(
                         RouteNames.detail.name,
                         pathParameters: {"id": product.id.toString()},
                       );

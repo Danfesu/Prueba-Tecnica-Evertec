@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:evertec_technical_test/core/router/route_names.dart';
 import 'package:evertec_technical_test/features/home/domain/entities/product_domain.dart';
+import 'package:evertec_technical_test/features/shared/extesions/snackbar_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -24,77 +25,117 @@ class CarruselSection extends StatefulWidget {
   State<CarruselSection> createState() => _CarruselSectionState();
 }
 
-class _CarruselSectionState extends State<CarruselSection> {
+class _CarruselSectionState extends State<CarruselSection>
+    with AutomaticKeepAliveClientMixin {
   late PageController _pageController;
-
   int _currentPage = 0;
+
+  // 🔥 Variable para trackear si necesitamos resetear
+  bool _needsReset = false;
+
+  @override
+  bool get wantKeepAlive => true; // Mantener el estado vivo
 
   @override
   void initState() {
     super.initState();
+    _initController();
+  }
+
+  void _initController() {
     _pageController = PageController(
-      viewportFraction: 0.75, // Para mostrar un poco del siguiente card
+      viewportFraction: 0.75,
+      initialPage: 0,
+      keepPage: false,
     );
-    _pageController.addListener(() {
-      int next = _pageController.page!.round();
-      if (_currentPage != next) {
-        setState(() {
-          _currentPage = next;
-        });
-      }
-    });
+    _pageController.addListener(_onPageChanged);
+  }
+
+  void _onPageChanged() {
+    if (!mounted) return;
+    if (!_pageController.hasClients) return;
+    if (!_pageController.position.haveDimensions) return;
+
+    final page = _pageController.page?.round();
+    if (page != null && _currentPage != page) {
+      setState(() {
+        _currentPage = page;
+      });
+    }
+  }
+
+  @override
+  void didUpdateWidget(CarruselSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // 🔥 Detectar si son productos nuevos (reintento)
+    if (oldWidget.products.isEmpty && widget.products.isNotEmpty) {
+      _needsReset = true;
+    }
+
+    // 🔥 Resetear si detectamos cambio
+    if (_needsReset) {
+      _pageController.removeListener(_onPageChanged);
+      _pageController.dispose();
+      _currentPage = 0;
+      _initController();
+      _needsReset = false;
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          setState(() {});
+        }
+      });
+    }
   }
 
   @override
   void dispose() {
+    _pageController.removeListener(_onPageChanged);
     _pageController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     final size = MediaQuery.of(context).size;
+
     return Column(
+      key: const PageStorageKey('carrusel_section'), // Key para mantener estado
       children: [
         SizedBox(
           height: size.height * 0.5,
           child: PageView.builder(
+            key: const PageStorageKey('product_pageview'),
             controller: _pageController,
-            physics: BouncingScrollPhysics(),
+            physics: const BouncingScrollPhysics(),
             itemCount: widget.products.length,
             itemBuilder: (context, index) {
               return AnimatedBuilder(
                 animation: _pageController,
                 builder: (context, child) {
-                  double page = 0;
+                  double page = _currentPage.toDouble();
 
                   if (_pageController.hasClients &&
                       _pageController.position.haveDimensions) {
-                    page =
-                        _pageController.page ??
-                        _pageController.initialPage.toDouble();
+                    page = _pageController.page ?? _currentPage.toDouble();
                   }
 
                   final diff = page - index;
                   final absDiff = diff.abs();
 
-                  // escala
                   final scale = (1 - (absDiff * 0.1)).clamp(0.4, 1.0);
-
-                  // rotación hacia arriba
                   final rotation = absDiff * (-0.8);
-
-                  // opacidad
                   final opacity = (1 - (absDiff * 0.5)).clamp(0.3, 1.0);
-
-                  // blur - 🔥 Solución: usar ImageFilter en lugar del valor
                   final blur = (absDiff * 5).clamp(0.0, 6.0);
 
                   return Center(
                     child: Transform(
                       alignment: Alignment.center,
                       transform: Matrix4.identity()
-                        ..setEntry(3, 2, 0.001) // perspectiva
+                        ..setEntry(3, 2, 0.001)
                         ..translateByDouble(
                           0.0,
                           absDiff * 20,
@@ -108,7 +149,6 @@ class _CarruselSectionState extends State<CarruselSection> {
                           scale: scale,
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(20),
-                            // ImageFiltered para
                             child: blur > 0
                                 ? ImageFiltered(
                                     imageFilter: ImageFilter.blur(
@@ -133,7 +173,7 @@ class _CarruselSectionState extends State<CarruselSection> {
             },
           ),
         ),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         _buildPageIndicators(),
       ],
     );
@@ -143,19 +183,17 @@ class _CarruselSectionState extends State<CarruselSection> {
     final colors = Theme.of(context).colorScheme;
     final textheme = Theme.of(context).textTheme;
     final size = MediaQuery.of(context).size;
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(22),
       child: BackdropFilter(
-        // 1. El filtro de desenfoque
         filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
         child: Container(
-          margin: EdgeInsets.symmetric(horizontal: 16),
+          margin: const EdgeInsets.symmetric(horizontal: 16),
           height: size.height * 0.45,
           decoration: BoxDecoration(
-            // 2. Color blanco con baja opacidad
             color: colors.onSurface.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(20),
-            // 3. Un borde sutil para definir el cristal
             border: Border.all(
               color: colors.onSurface.withValues(alpha: 0.2),
               width: 1.5,
@@ -187,12 +225,16 @@ class _CarruselSectionState extends State<CarruselSection> {
                       style: textheme.bodySmall?.copyWith(
                         color: colors.primary,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     Text(
                       product.title,
                       style: textheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     Text(
                       NumberFormat.currency(
@@ -207,15 +249,25 @@ class _CarruselSectionState extends State<CarruselSection> {
                     SizedBox(
                       width: double.infinity,
                       child: FilledButton.icon(
-                        onPressed: () {
-                          _pageController.jumpToPage(_currentPage);
-                          context.goNamed(
+                        onPressed: () async {
+                          // 🔥 Esperar a que regrese de la navegación
+                          await context.pushNamed(
                             RouteNames.detail.name,
                             pathParameters: {"id": product.id.toString()},
                           );
+
+                          // 🔥 Cuando regrese, ajustar si es necesario
+                          if (mounted && _pageController.hasClients) {
+                            // Esperar un frame para que el widget se reconstruya
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              if (mounted && _pageController.hasClients) {
+                                _pageController.jumpToPage(_currentPage);
+                              }
+                            });
+                          }
                         },
-                        label: Text("Ver detalle"),
-                        icon: Icon(Icons.visibility),
+                        label: const Text("Ver detalle"),
+                        icon: const Icon(Icons.visibility),
                       ),
                     ),
                   ],

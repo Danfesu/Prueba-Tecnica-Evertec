@@ -156,7 +156,7 @@ class MainLayout extends StatelessWidget {
         ),
         IconButton(
           onPressed: () {
-            context.goNamed(RouteNames.settings.name);
+            context.pushNamed(RouteNames.settings.name);
           },
           icon: Icon(Icons.account_circle),
         ),
