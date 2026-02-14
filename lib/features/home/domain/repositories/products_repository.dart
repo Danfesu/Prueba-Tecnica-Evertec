@@ -1,5 +1,5 @@
 import 'package:evertec_technical_test/core/errors/failures.dart';
-import 'package:evertec_technical_test/features/home/domain/entities/product.dart';
+import 'package:evertec_technical_test/features/home/domain/entities/product_domain.dart';
 import 'package:fpdart/fpdart.dart';
 
 abstract class ProductsRepository {

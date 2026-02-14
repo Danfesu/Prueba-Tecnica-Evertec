@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'layout_state.dart';
+part of 'detail_product_state.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -12,7 +12,7 @@ part of 'layout_state.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$LayoutState {
+mixin _$DetailProductState {
 
 
 
@@ -20,7 +20,7 @@ mixin _$LayoutState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LayoutState);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DetailProductState);
 }
 
 
@@ -29,20 +29,20 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'LayoutState()';
+  return 'DetailProductState()';
 }
 
 
 }
 
 /// @nodoc
-class $LayoutStateCopyWith<$Res>  {
-$LayoutStateCopyWith(LayoutState _, $Res Function(LayoutState) __);
+class $DetailProductStateCopyWith<$Res>  {
+$DetailProductStateCopyWith(DetailProductState _, $Res Function(DetailProductState) __);
 }
 
 
-/// Adds pattern-matching-related methods to [LayoutState].
-extension LayoutStatePatterns on LayoutState {
+/// Adds pattern-matching-related methods to [DetailProductState].
+extension DetailProductStatePatterns on DetailProductState {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -128,13 +128,13 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<ItemPage> pages)?  loaded,TResult Function( String message)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( Product product,  bool isOffline,  bool isFromCache)?  loaded,TResult Function( String message,  bool isOffline)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case _Loaded() when loaded != null:
-return loaded(_that.pages);case _Error() when error != null:
-return error(_that.message);case _:
+return loaded(_that.product,_that.isOffline,_that.isFromCache);case _Error() when error != null:
+return error(_that.message,_that.isOffline);case _:
   return orElse();
 
 }
@@ -152,13 +152,13 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<ItemPage> pages)  loaded,required TResult Function( String message)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( Product product,  bool isOffline,  bool isFromCache)  loaded,required TResult Function( String message,  bool isOffline)  error,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
 return loading();case _Loaded():
-return loaded(_that.pages);case _Error():
-return error(_that.message);case _:
+return loaded(_that.product,_that.isOffline,_that.isFromCache);case _Error():
+return error(_that.message,_that.isOffline);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -175,13 +175,13 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<ItemPage> pages)?  loaded,TResult? Function( String message)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( Product product,  bool isOffline,  bool isFromCache)?  loaded,TResult? Function( String message,  bool isOffline)?  error,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case _Loaded() when loaded != null:
-return loaded(_that.pages);case _Error() when error != null:
-return error(_that.message);case _:
+return loaded(_that.product,_that.isOffline,_that.isFromCache);case _Error() when error != null:
+return error(_that.message,_that.isOffline);case _:
   return null;
 
 }
@@ -192,7 +192,7 @@ return error(_that.message);case _:
 /// @nodoc
 
 
-class _Initial implements LayoutState {
+class _Initial implements DetailProductState {
   const _Initial();
   
 
@@ -212,7 +212,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'LayoutState.initial()';
+  return 'DetailProductState.initial()';
 }
 
 
@@ -224,7 +224,7 @@ String toString() {
 /// @nodoc
 
 
-class _Loading implements LayoutState {
+class _Loading implements DetailProductState {
   const _Loading();
   
 
@@ -244,7 +244,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'LayoutState.loading()';
+  return 'DetailProductState.loading()';
 }
 
 
@@ -256,19 +256,15 @@ String toString() {
 /// @nodoc
 
 
-class _Loaded implements LayoutState {
-  const _Loaded({required final  List<ItemPage> pages}): _pages = pages;
+class _Loaded implements DetailProductState {
+  const _Loaded({required this.product, required this.isOffline, required this.isFromCache});
   
 
- final  List<ItemPage> _pages;
- List<ItemPage> get pages {
-  if (_pages is EqualUnmodifiableListView) return _pages;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_pages);
-}
+ final  Product product;
+ final  bool isOffline;
+ final  bool isFromCache;
 
-
-/// Create a copy of LayoutState
+/// Create a copy of DetailProductState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
@@ -278,27 +274,27 @@ _$LoadedCopyWith<_Loaded> get copyWith => __$LoadedCopyWithImpl<_Loaded>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&const DeepCollectionEquality().equals(other._pages, _pages));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&(identical(other.product, product) || other.product == product)&&(identical(other.isOffline, isOffline) || other.isOffline == isOffline)&&(identical(other.isFromCache, isFromCache) || other.isFromCache == isFromCache));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_pages));
+int get hashCode => Object.hash(runtimeType,product,isOffline,isFromCache);
 
 @override
 String toString() {
-  return 'LayoutState.loaded(pages: $pages)';
+  return 'DetailProductState.loaded(product: $product, isOffline: $isOffline, isFromCache: $isFromCache)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$LoadedCopyWith<$Res> implements $LayoutStateCopyWith<$Res> {
+abstract mixin class _$LoadedCopyWith<$Res> implements $DetailProductStateCopyWith<$Res> {
   factory _$LoadedCopyWith(_Loaded value, $Res Function(_Loaded) _then) = __$LoadedCopyWithImpl;
 @useResult
 $Res call({
- List<ItemPage> pages
+ Product product, bool isOffline, bool isFromCache
 });
 
 
@@ -313,12 +309,14 @@ class __$LoadedCopyWithImpl<$Res>
   final _Loaded _self;
   final $Res Function(_Loaded) _then;
 
-/// Create a copy of LayoutState
+/// Create a copy of DetailProductState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? pages = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? product = null,Object? isOffline = null,Object? isFromCache = null,}) {
   return _then(_Loaded(
-pages: null == pages ? _self._pages : pages // ignore: cast_nullable_to_non_nullable
-as List<ItemPage>,
+product: null == product ? _self.product : product // ignore: cast_nullable_to_non_nullable
+as Product,isOffline: null == isOffline ? _self.isOffline : isOffline // ignore: cast_nullable_to_non_nullable
+as bool,isFromCache: null == isFromCache ? _self.isFromCache : isFromCache // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
@@ -328,13 +326,14 @@ as List<ItemPage>,
 /// @nodoc
 
 
-class _Error implements LayoutState {
-  const _Error({required this.message});
+class _Error implements DetailProductState {
+  const _Error({required this.message, required this.isOffline});
   
 
  final  String message;
+ final  bool isOffline;
 
-/// Create a copy of LayoutState
+/// Create a copy of DetailProductState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
@@ -344,27 +343,27 @@ _$ErrorCopyWith<_Error> get copyWith => __$ErrorCopyWithImpl<_Error>(this, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Error&&(identical(other.message, message) || other.message == message));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Error&&(identical(other.message, message) || other.message == message)&&(identical(other.isOffline, isOffline) || other.isOffline == isOffline));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message);
+int get hashCode => Object.hash(runtimeType,message,isOffline);
 
 @override
 String toString() {
-  return 'LayoutState.error(message: $message)';
+  return 'DetailProductState.error(message: $message, isOffline: $isOffline)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$ErrorCopyWith<$Res> implements $LayoutStateCopyWith<$Res> {
+abstract mixin class _$ErrorCopyWith<$Res> implements $DetailProductStateCopyWith<$Res> {
   factory _$ErrorCopyWith(_Error value, $Res Function(_Error) _then) = __$ErrorCopyWithImpl;
 @useResult
 $Res call({
- String message
+ String message, bool isOffline
 });
 
 
@@ -379,12 +378,13 @@ class __$ErrorCopyWithImpl<$Res>
   final _Error _self;
   final $Res Function(_Error) _then;
 
-/// Create a copy of LayoutState
+/// Create a copy of DetailProductState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? message = null,Object? isOffline = null,}) {
   return _then(_Error(
 message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
-as String,
+as String,isOffline: null == isOffline ? _self.isOffline : isOffline // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

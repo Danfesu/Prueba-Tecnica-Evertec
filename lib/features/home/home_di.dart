@@ -6,6 +6,7 @@ import 'package:evertec_technical_test/features/home/domain/repositories/product
 import 'package:evertec_technical_test/features/home/domain/usecases/get_all_products.dart';
 import 'package:evertec_technical_test/features/home/domain/usecases/get_product_by_id.dart';
 import 'package:evertec_technical_test/features/home/domain/usecases/sync_products.dart';
+import 'package:evertec_technical_test/features/home/presentation/cubits/detail/detail_product_cubit.dart';
 import 'package:evertec_technical_test/features/home/presentation/cubits/products/products_cubit.dart';
 import 'package:get_it/get_it.dart';
 
@@ -13,14 +14,11 @@ void initHomeFeature() {
   GetIt instance = InjectorContainer.instance;
 
   // Cubits
-  instance.registerLazySingleton(
-    () => ProductsCubit(
-      instance(),
-      instance(),
-      instance(),
-      instance(),
-      instance(),
-    ),
+  instance.registerFactory(
+    () => ProductsCubit(instance(), instance(), instance(), instance()),
+  );
+  instance.registerFactory(
+    () => DetailProductCubit(instance(), instance(), instance()),
   );
   // UseCases
   instance.registerLazySingleton(() => GetAllProducts(instance()));

@@ -1,9 +1,9 @@
-import 'dart:ui';
-
-import 'package:evertec_technical_test/features/home/domain/entities/product.dart';
+import 'package:animate_do/animate_do.dart';
+import 'package:evertec_technical_test/features/home/domain/entities/product_domain.dart';
 import 'package:evertec_technical_test/features/home/presentation/cubits/products/products_cubit.dart';
 import 'package:evertec_technical_test/features/home/presentation/cubits/products/products_state.dart';
 import 'package:evertec_technical_test/features/home/presentation/screens/home/sections/carrusel_section.dart';
+import 'package:evertec_technical_test/features/home/presentation/screens/home/sections/sliver_grid_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -23,6 +23,7 @@ class HomeScreen extends StatelessWidget {
             loading: () => Center(child: CircularProgressIndicator()),
             loaded: (products, isOffline, isFromCache) => CustomScrollView(
               slivers: [
+                // Carrusel Section
                 SliverToBoxAdapter(
                   child: Container(
                     margin: EdgeInsets.only(top: 16),
@@ -62,15 +63,21 @@ class HomeScreen extends StatelessWidget {
                             ],
                           ),
                         ),
-                        CarruselSection(
-                          products: products,
-                          isOffline: isOffline,
-                          isFromCache: isFromCache,
+                        FadeInRight(
+                          child: CarruselSection(
+                            products: products,
+                            isOffline: isOffline,
+                            isFromCache: isFromCache,
+                          ),
                         ),
                       ],
                     ),
                   ),
                 ),
+
+                // Grid Secion
+                SliverGridSection(products: products),
+                SliverToBoxAdapter(child: SizedBox(height: 40)),
               ],
             ),
             syncing: (products) => _buildSyncingState(products),
@@ -94,7 +101,7 @@ class HomeScreen extends StatelessWidget {
             onRefresh: () => context.read<PostCubit>().synchronizePosts(),
           ), */
         Container(
-          color: Colors.black.withOpacity(0.3),
+          color: Colors.black.withValues(alpha: 0.3),
           child: const Center(
             child: Card(
               child: Padding(

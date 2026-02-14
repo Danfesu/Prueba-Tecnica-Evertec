@@ -1,6 +1,6 @@
 import 'package:evertec_technical_test/features/home/data/models/product_models.dart';
-import 'package:evertec_technical_test/features/home/domain/entities/Tag.dart';
-import 'package:evertec_technical_test/features/home/domain/entities/product.dart';
+import 'package:evertec_technical_test/features/home/domain/entities/product_domain.dart';
+import 'package:evertec_technical_test/features/home/domain/entities/tag_domain.dart';
 
 class ProductMapper {
   static Product fromModel(ProductModel model) {

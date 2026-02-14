@@ -1,4 +1,4 @@
-import 'package:evertec_technical_test/features/home/domain/entities/Tag.dart';
+import 'package:evertec_technical_test/features/home/domain/entities/tag_domain.dart';
 
 class Product {
   final int id;

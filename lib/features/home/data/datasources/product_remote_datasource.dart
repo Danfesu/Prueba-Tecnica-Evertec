@@ -1,7 +1,7 @@
 import 'package:evertec_technical_test/core/http/api_client.dart';
 import 'package:evertec_technical_test/features/home/data/mappers/product_mapper.dart';
 import 'package:evertec_technical_test/features/home/data/models/product_models.dart';
-import 'package:evertec_technical_test/features/home/domain/entities/product.dart';
+import 'package:evertec_technical_test/features/home/domain/entities/product_domain.dart';
 
 abstract class ProductsRemoteDatasource {
   Future<List<Product>> getAllProducts();
