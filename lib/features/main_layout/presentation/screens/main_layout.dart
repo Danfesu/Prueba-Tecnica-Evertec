@@ -100,7 +100,7 @@ class MainLayout extends StatelessWidget {
             onPressed: () {
               context.read<AuthCubit>().logout();
             },
-            label: Text("Logout"),
+            label: Text("Cerrar sesión"),
             icon: Icon(Icons.logout),
             style: ElevatedButton.styleFrom(
               padding: EdgeInsets.all(15),

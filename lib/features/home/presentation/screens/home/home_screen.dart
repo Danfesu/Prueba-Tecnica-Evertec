@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:evertec_technical_test/features/home/domain/entities/product.dart';
 import 'package:evertec_technical_test/features/home/presentation/cubits/products/products_cubit.dart';
 import 'package:evertec_technical_test/features/home/presentation/cubits/products/products_state.dart';
@@ -19,11 +21,57 @@ class HomeScreen extends StatelessWidget {
           return state.when(
             initial: () => SizedBox.shrink(),
             loading: () => Center(child: CircularProgressIndicator()),
-            loaded: (products, isOffline, isFromCache) => Center(
-              child: SafeArea(child: CustomScrollView(slivers: [
-                    
-                  ],
-                )),
+            loaded: (products, isOffline, isFromCache) => CustomScrollView(
+              slivers: [
+                SliverToBoxAdapter(
+                  child: Container(
+                    margin: EdgeInsets.only(top: 16),
+                    width: double.infinity,
+                    height: size.height * 0.65,
+                    decoration: BoxDecoration(
+                      color: colors.primary.withValues(alpha: 0.03),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(32),
+                        topRight: Radius.circular(32),
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 10,
+                          ),
+                          child: Row(
+                            children: [
+                              Text(
+                                "Exclusivos",
+                                style: textheme.headlineMedium,
+                              ),
+                              Spacer(),
+                              TextButton(
+                                onPressed: () {},
+                                child: Text(
+                                  "VER 24 ITEMS",
+                                  style: textheme.bodyLarge?.copyWith(
+                                    color: colors.primary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        CarruselSection(
+                          products: products,
+                          isOffline: isOffline,
+                          isFromCache: isFromCache,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
             syncing: (products) => _buildSyncingState(products),
             error: (error, isOffline) => _buildErrorState(
