@@ -18,8 +18,8 @@ import 'package:go_router/go_router.dart';
 
 // Router de la aplicación con GoRouter
 final appRouter = GoRouter(
-  initialLocation: RoutePaths.home,
-  /* refreshListenable: GoRouterRefreshStream(
+  initialLocation: RoutePaths.splash,
+  refreshListenable: GoRouterRefreshStream(
     InjectorContainer.instance<AuthCubit>().stream,
   ),
   redirect: (context, state) {
@@ -44,7 +44,7 @@ final appRouter = GoRouter(
     }
 
     return null;
-  }, */
+  },
   // Rutas principales de la aplicación
   routes: [
     // Ruta de splash screen
@@ -76,13 +76,13 @@ final appRouter = GoRouter(
             child: const HomeScreen(),
           ),
         ),
-        // Ruta de configuración
-        GoRoute(
-          path: RoutePaths.settings,
-          name: RouteNames.settings.name,
-          builder: (context, state) => const SettingsScreen(),
-        ),
       ],
+    ),
+    // Ruta de configuración
+    GoRoute(
+      path: RoutePaths.settings,
+      name: RouteNames.settings.name,
+      builder: (context, state) => SettingsScreen(),
     ),
     // Ruta de detalle
     GoRoute(

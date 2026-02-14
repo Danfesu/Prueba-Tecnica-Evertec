@@ -1,4 +1,6 @@
+import 'package:evertec_technical_test/core/router/route_names.dart';
 import 'package:evertec_technical_test/features/auth/presentation/cubits/auth_cubit.dart';
+import 'package:evertec_technical_test/features/auth/presentation/cubits/auth_state.dart';
 import 'package:evertec_technical_test/features/main_layout/presentation/cubits/layout_cubit.dart';
 import 'package:evertec_technical_test/features/main_layout/presentation/cubits/layout_state.dart';
 import 'package:evertec_technical_test/features/main_layout/presentation/widgets/drawer_item.dart';
@@ -65,29 +67,38 @@ class MainLayout extends StatelessWidget {
   }
 
   Widget _buildHeaderDrawer(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          CircleAvatar(
-            radius: 35,
-            backgroundColor: Colors.white,
-            child: Icon(
-              Icons.person,
-              size: 40,
-              color: Theme.of(context).colorScheme.primary,
-            ),
+    return BlocBuilder<AuthCubit, AuthState>(
+      builder: (context, state) {
+        final userAuthenticated = state.mapOrNull(authenticated: (s) => s);
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              CircleAvatar(
+                radius: 35,
+                backgroundColor: Colors.white,
+                child: Icon(
+                  Icons.person,
+                  size: 40,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
+              SizedBox(height: 10),
+              Text(
+                userAuthenticated?.user.name ?? '',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              Text(
+                userAuthenticated?.user.email ?? '',
+                style: Theme.of(context).textTheme.labelSmall,
+              ),
+            ],
           ),
-          SizedBox(height: 10),
-          Text("Alex Sterling", style: Theme.of(context).textTheme.titleLarge),
-          Text(
-            "alex.s@tech-inc.io",
-            style: Theme.of(context).textTheme.labelSmall,
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -96,26 +107,12 @@ class MainLayout extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: Column(
         children: [
-          ElevatedButton.icon(
-            onPressed: () {
-              context.read<AuthCubit>().logout();
-            },
-            label: Text("Cerrar sesión"),
-            icon: Icon(Icons.logout),
-            style: ElevatedButton.styleFrom(
-              padding: EdgeInsets.all(15),
-              backgroundColor: Colors.redAccent.withValues(alpha: 0.15),
-              foregroundColor: Colors.redAccent,
-              minimumSize: Size(double.infinity, 40),
-              iconSize: 20,
-            ),
-          ),
           SizedBox(height: 15),
           Row(
             children: [
               SizedBox(width: 10),
               Text(
-                "BUILD 2.4.0",
+                "BUILD 1.0.0",
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
                   color: Theme.of(
                     context,
@@ -124,7 +121,7 @@ class MainLayout extends StatelessWidget {
               ),
               Spacer(),
               Text(
-                "v1.0.24",
+                "v1.0.0",
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
                   color: Theme.of(
                     context,
@@ -157,48 +154,11 @@ class MainLayout extends StatelessWidget {
           },
           icon: Icon(Icons.notifications),
         ),
-        PopupMenuButton<String>(
-          offset: Offset(0, 50),
-          onSelected: (value) {
-            if (value == 'logout') {
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    title: const Text('¿Quieres cerrar sesión?'),
-                    actionsOverflowDirection: VerticalDirection.down,
-                    actions: [
-                      SizedBox(
-                        width: double.infinity,
-                        child: FilledButton(
-                          onPressed: () {
-                            context.read<AuthCubit>().logout();
-                            Navigator.pop(context);
-                          },
-                          child: const Text('Aceptar'),
-                        ),
-                      ),
-                      SizedBox(
-                        width: double.infinity,
-                        child: OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            side: BorderSide(color: Colors.blue, width: 2.0),
-                            foregroundColor: Colors.blue,
-                          ),
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text('Cancelar'),
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              );
-            }
+        IconButton(
+          onPressed: () {
+            context.pushNamed(RouteNames.settings.name);
           },
-          itemBuilder: (context) => [
-            PopupMenuItem(value: 'logout', child: Text('Cerrar sesión')),
-          ],
-          icon: const Icon(Icons.account_circle),
+          icon: Icon(Icons.account_circle),
         ),
       ],
     );

@@ -1,4 +1,4 @@
-import 'package:evertec_technical_test/core/network/network_info.dart';
+import 'package:evertec_technical_test/core/services/network/network_info.dart';
 import 'package:evertec_technical_test/features/home/data/datasources/products_local_datasorce.dart';
 import 'package:evertec_technical_test/features/home/domain/usecases/get_product_by_id.dart';
 import 'package:evertec_technical_test/features/home/presentation/cubits/detail/detail_product_state.dart';

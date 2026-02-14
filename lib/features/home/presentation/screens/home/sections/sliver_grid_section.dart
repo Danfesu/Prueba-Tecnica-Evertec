@@ -2,9 +2,11 @@ import 'dart:math';
 
 import 'package:animate_do/animate_do.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:evertec_technical_test/core/router/route_names.dart';
 import 'package:evertec_technical_test/features/home/domain/entities/product_domain.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:go_router/go_router.dart';
 
 class SliverGridSection extends StatelessWidget {
   final List<Product> products;
@@ -35,16 +37,24 @@ class SliverGridSection extends StatelessWidget {
                 FadeInUp(
                   from: Random().nextInt(100) + 80,
                   delay: Duration(microseconds: Random().nextInt(450) + 0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: CachedNetworkImage(
-                      imageUrl: product.imageUrl,
-                      height: 210,
-                      fit: BoxFit.contain,
-                      placeholder: (context, url) => const SizedBox(),
-                      errorWidget: (context, url, error) => Image.asset(
-                        'assets/images/no_connection.jpg',
+                  child: GestureDetector(
+                    onTap: () {
+                      context.pushNamed(
+                        RouteNames.detail.name,
+                        pathParameters: {"id": product.id.toString()},
+                      );
+                    },
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: CachedNetworkImage(
+                        imageUrl: product.imageUrl,
+                        height: 210,
                         fit: BoxFit.contain,
+                        placeholder: (context, url) => const SizedBox(),
+                        errorWidget: (context, url, error) => Image.asset(
+                          'assets/images/no_connection.jpg',
+                          fit: BoxFit.contain,
+                        ),
                       ),
                     ),
                   ),

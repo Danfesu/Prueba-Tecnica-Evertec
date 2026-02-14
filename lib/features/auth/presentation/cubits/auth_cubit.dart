@@ -4,7 +4,6 @@ import 'package:evertec_technical_test/features/auth/domain/usecases/sing_out.da
 import 'package:evertec_technical_test/features/auth/domain/valueobjects/email_vo.dart';
 import 'package:evertec_technical_test/features/auth/domain/valueobjects/password.dart';
 import 'package:evertec_technical_test/features/auth/presentation/cubits/auth_state.dart';
-import 'package:evertec_technical_test/features/shared/extesions/error_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -23,15 +22,7 @@ class AuthCubit extends Cubit<AuthState> {
       final user = await _singInGoogle();
       emit(AuthState.authenticated(user: user));
     } catch (e) {
-      emit(AuthState.error(message: "Error al cargar"));
-      context.showErrorDialog(
-        "Sin conexion",
-        "Revisa tu internet y vuleve a intentarlo",
-        () {
-          loginWithGoogle(context);
-        },
-      );
-      return;
+      emit(AuthState.error(message: "Inicio de sesión fallido"));
     }
   }
 

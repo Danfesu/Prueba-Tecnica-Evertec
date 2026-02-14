@@ -18,14 +18,6 @@ class MainLayoutLocalDatasource implements MainLayoutDatasource {
       ),
     );
 
-    pages.add(
-      ItemPage(
-        icon: Icons.settings_outlined,
-        label: "Configuración",
-        route: RoutePaths.settings,
-      ),
-    );
-
     return pages;
   }
 }
