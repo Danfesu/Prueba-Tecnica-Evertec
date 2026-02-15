@@ -5,6 +5,12 @@ import 'package:evertec_technical_test/features/shared/widgets/no_implemented.da
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+/// Sección alternativa del login que permite continuar
+/// con proveedores externos (ej: Google) o navegar
+/// hacia el registro de usuario.
+///
+/// Esta clase pertenece a la capa de presentación y
+/// delega la lógica de autenticación al [AuthCubit].
 class LoginOrContinueSecion extends StatelessWidget {
   const LoginOrContinueSecion({super.key});
 
@@ -14,8 +20,16 @@ class LoginOrContinueSecion extends StatelessWidget {
 
     return Column(
       children: [
+        /// Divisor visual con mensaje que separa
+        /// el login tradicional del login social.
         DividerWithMessage(message: "O CONTINUAR CON"),
+
         SizedBox(height: 8.0),
+
+        /// Botón para autenticación con Google.
+        ///
+        /// Al presionarlo, ejecuta el método
+        /// `loginWithGoogle` del [AuthCubit].
         SizedBox(
           width: double.infinity,
           child: OtherLoginButton(
@@ -26,7 +40,12 @@ class LoginOrContinueSecion extends StatelessWidget {
             },
           ),
         ),
+
         SizedBox(height: 15.0),
+
+        /// Sección inferior para redirigir al registro.
+        /// Actualmente muestra un diálogo indicando
+        /// que la funcionalidad no está implementada.
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           spacing: 8.0,
@@ -46,6 +65,7 @@ class LoginOrContinueSecion extends StatelessWidget {
             ),
           ],
         ),
+
         SizedBox(height: 10.0),
       ],
     );

@@ -1,135 +1,93 @@
-import 'package:evertec_technical_test/features/auth/presentation/cubits/auth_state.dart';
-import 'package:go_router/go_router.dart';
-
-// Core
 import 'package:evertec_technical_test/core/di/injector_container.dart';
 import 'package:evertec_technical_test/core/router/refresh_stream.dart';
 import 'package:evertec_technical_test/core/router/route_names.dart';
 import 'package:evertec_technical_test/core/router/route_paths.dart';
 import 'package:evertec_technical_test/core/splash/splash_screen.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
-// Features - Auth
 import 'package:evertec_technical_test/features/auth/presentation/cubits/auth_cubit.dart';
+import 'package:evertec_technical_test/features/auth/presentation/cubits/auth_state.dart';
 import 'package:evertec_technical_test/features/auth/presentation/screens/login/login_screen.dart';
-
-// Features - Home
 import 'package:evertec_technical_test/features/home/presentation/cubits/detail/detail_product_cubit.dart';
 import 'package:evertec_technical_test/features/home/presentation/cubits/products/products_cubit.dart';
 import 'package:evertec_technical_test/features/home/presentation/screens/detail/detail_screen.dart';
 import 'package:evertec_technical_test/features/home/presentation/screens/home/home_screen.dart';
-
-// Features - Layout
 import 'package:evertec_technical_test/features/main_layout/presentation/cubits/layout_cubit.dart';
 import 'package:evertec_technical_test/features/main_layout/presentation/screens/main_layout.dart';
-
-// Features - Settings
 import 'package:evertec_technical_test/features/settings/presentation/screens/settings_screem.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
-/// Router principal de la aplicación.
+/// Router principal de la aplicación configurado con [GoRouter].
 ///
-/// Gestiona la navegación entre pantallas usando GoRouter.
-///
-/// **Características:**
-/// - Redirección automática según estado de autenticación
-/// - Refresh automático cuando cambia el estado de auth
-/// - Shell routes para mantener layout persistente
-/// - Rutas tipadas con enums
-///
-/// **Flujo de navegación:**
-/// 1. Splash → Login/Home (según autenticación)
-/// 2. Login → Home (después de login exitoso)
-/// 3. Home → Detail → Home (navegación de productos)
-/// 4. Home → Settings → Home (configuración)
-/// Router de la aplicación con GoRouter
+/// Responsabilidades:
+/// - Definir las rutas principales.
+/// - Gestionar redirecciones según el estado de autenticación.
+/// - Escuchar cambios del [AuthCubit] para refrescar navegación.
+/// - Inyectar dependencias mediante [InjectorContainer].
 final appRouter = GoRouter(
-  // ══════════════════════════════════════════════════════════════
-  // CONFIGURACIÓN INICIAL
-  // ══════════════════════════════════════════════════════════════
-
-  /// Ruta inicial al abrir la app.
+  /// Ruta inicial de la aplicación.
   initialLocation: RoutePaths.splash,
-  // ══════════════════════════════════════════════════════════════
-  // REFRESH AUTOMÁTICO
-  // ══════════════════════════════════════════════════════════════
 
-  /// Escucha cambios en el estado de autenticación.
-  ///
-  /// Cuando cambia (login/logout), ejecuta el redirect automáticamente.
+  /// Escucha los cambios del AuthCubit para
+  /// recalcular automáticamente las redirecciones.
   refreshListenable: GoRouterRefreshStream(
     InjectorContainer.instance<AuthCubit>().stream,
   ),
-  // ══════════════════════════════════════════════════════════════
-  // REDIRECCIÓN GLOBAL (Auth Guard)
-  // ══════════════════════════════════════════════════════════════
 
-  /// Maneja la lógica de redirección según estado de autenticación.
-  ///
-  /// **Casos:**
-  /// 1. Usuario no autenticado → Redirigir a login
-  /// 2. Usuario autenticado en login → Redirigir a home
-  /// 3. Usuario autenticado en otras rutas → Permitir acceso
+  /// Lógica de redirección global basada en el estado de autenticación.
   redirect: (context, state) {
-    final authCubit = InjectorContainer.instance<AuthCubit>();
-    final authState = authCubit.state;
+    final instance = InjectorContainer.instance;
 
-    final currentPath = state.matchedLocation;
-    final isOnLoginPage = currentPath == RoutePaths.login;
-    final isOnSplashPage = currentPath == RoutePaths.splash;
+    final authState = instance<AuthCubit>().state;
+    final isLogginIn = state.fullPath == RoutePaths.login;
+    final isSplash = state.fullPath == RoutePaths.splash;
 
-    // Verificar si el usuario NO está autenticado
-    final isUnauthenticated = authState.maybeWhen(
+    /// Determina si el usuario NO está autenticado.
+    final isAAuthUnauthenticated = authState.maybeWhen(
       unauthenticated: () => true,
+      initial: () => true,
       error: (_) => true,
       orElse: () => false,
     );
 
-    // Usuario no autenticado → Login
-    if (isUnauthenticated && !isOnLoginPage && !isOnSplashPage) {
+    /// Si el usuario no está autenticado e intenta acceder
+    /// a una ruta protegida, se redirige al login.
+    if (isAAuthUnauthenticated && !isLogginIn && !isSplash) {
       return RoutePaths.login;
     }
 
-    // Usuario autenticado → Redirigir desde login a home
-    final isAuthenticated = authState.maybeWhen(
+    /// Determina si el usuario está autenticado.
+    final isAuthAuthenticated = authState.maybeWhen(
       authenticated: (_) => true,
       orElse: () => false,
     );
 
-    if (isAuthenticated && isOnLoginPage) {
+    /// Si el usuario ya está autenticado y está en login,
+    /// se redirige automáticamente al home.
+    if (isAuthAuthenticated && isLogginIn) {
       return RoutePaths.home;
     }
 
-    // Permitir navegación a splash siempre
-    if (isOnSplashPage) {
-      return null;
-    }
-
-    // Sin redirección necesaria
     return null;
   },
-  // ══════════════════════════════════════════════════════════════
-  // RUTAS
-  // ══════════════════════════════════════════════════════════════
+
+  /// Definición de rutas principales.
   routes: [
-    // ══════════════════════════════════════════════════════════
-    // SPLASH SCREEN
-    // ══════════════════════════════════════════════════════════
+    /// Ruta de Splash Screen.
     GoRoute(
       path: RoutePaths.splash,
       name: RouteNames.splash.name,
       builder: (context, state) => const SplashScreen(),
     ),
-    // ══════════════════════════════════════════════════════════
-    // AUTH - LOGIN
-    // ══════════════════════════════════════════════════════════
+
+    /// Ruta de Login.
     GoRoute(
       path: RoutePaths.login,
       name: RouteNames.login.name,
       builder: (context, state) => const LoginScreen(),
     ),
-    // ══════════════════════════════════════════════════════════
-    // MAIN LAYOUT (Shell Route con Bottom Navigation)
-    // ══════════════════════════════════════════════════════════
+
+    /// ShellRoute que envuelve las rutas principales
+    /// con un layout común (ej: navegación inferior).
     ShellRoute(
       builder: (context, state, child) {
         return BlocProvider(
@@ -138,9 +96,7 @@ final appRouter = GoRouter(
         );
       },
       routes: [
-        // ══════════════════════════════════════════════════════
-        // HOME
-        // ══════════════════════════════════════════════════════
+        /// Ruta Home protegida.
         GoRoute(
           path: RoutePaths.home,
           name: RouteNames.home.name,
@@ -151,17 +107,18 @@ final appRouter = GoRouter(
         ),
       ],
     ),
-    // ══════════════════════════════════════════════════════
-    // SETTINGS (dentro del Shell)
-    // ══════════════════════════════════════════════════════
+
+    /// Ruta de configuración.
     GoRoute(
       path: RoutePaths.settings,
       name: RouteNames.settings.name,
       builder: (context, state) => SettingsScreen(),
     ),
-    // ══════════════════════════════════════════════════════════
-    // PRODUCT DETAIL (Fuera del Shell - Full Screen)
-    // ══════════════════════════════════════════════════════════
+
+    /// Ruta de detalle de producto.
+    ///
+    /// Recibe el parámetro dinámico `id`
+    /// y carga la información del producto correspondiente.
     GoRoute(
       path: RoutePaths.detail,
       name: RouteNames.detail.name,

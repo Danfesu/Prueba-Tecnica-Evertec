@@ -14,22 +14,18 @@ class OtherLoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    return Expanded(
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: colors.surfaceBright,
-          foregroundColor: colors.onSurface,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ),
-        onPressed: onPressed,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 15),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [Icon(icon), SizedBox(width: 8.0), Text(text)],
-          ),
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: colors.surfaceBright,
+        foregroundColor: colors.onSurface,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ),
+      onPressed: onPressed,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 15),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [Icon(icon), SizedBox(width: 8.0), Text(text)],
         ),
       ),
     );
