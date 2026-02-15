@@ -4,7 +4,17 @@ import 'package:evertec_technical_test/features/shared/widgets/no_implemented.da
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+/// Widget que representa la sección de información del producto
+/// dentro de la pantalla de detalle.
+///
+/// Contiene:
+/// - Título y precio formateado.
+/// - Lista de etiquetas (tags).
+/// - Descripción del producto.
+/// - Dimensiones (ancho, alto y largo).
+/// - Botón para añadir al carrito (no implementado).
 class DetailInfo extends StatelessWidget {
+  /// Entidad de dominio que contiene la información completa del producto.
   final Product product;
 
   const DetailInfo({super.key, required this.product});
@@ -13,14 +23,17 @@ class DetailInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final colors = Theme.of(context).colorScheme;
+
     return SliverMainAxisGroup(
       slivers: [
+        /// Sección principal con título, precio, tags y descripción
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.all(15.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                /// Fila con título del producto y precio
                 Row(
                   children: [
                     Expanded(
@@ -31,6 +44,8 @@ class DetailInfo extends StatelessWidget {
                         ),
                       ),
                     ),
+
+                    /// Precio formateado en moneda colombiana
                     Text(
                       NumberFormat.currency(
                         locale: "es_CO",
@@ -43,7 +58,10 @@ class DetailInfo extends StatelessWidget {
                     ),
                   ],
                 ),
+
                 SizedBox(height: 15),
+
+                /// Chips dinámicos generados a partir de los tags del producto
                 Wrap(
                   children: [
                     ...product.tags.map(
@@ -51,7 +69,10 @@ class DetailInfo extends StatelessWidget {
                     ),
                   ],
                 ),
+
                 SizedBox(height: 20),
+
+                /// Título de sección descripción
                 Text(
                   "DESCRIPCIÓN",
                   style: textTheme.bodyLarge?.copyWith(
@@ -59,13 +80,19 @@ class DetailInfo extends StatelessWidget {
                     color: colors.onSurface.withValues(alpha: 0.5),
                   ),
                 ),
+
                 SizedBox(height: 10),
+
+                /// Texto descriptivo del producto
                 Text(product.description, style: textTheme.bodyLarge),
+
                 SizedBox(height: 40),
               ],
             ),
           ),
         ),
+
+        /// Grid con dimensiones del producto
         SliverGrid.count(
           crossAxisCount: 3,
           childAspectRatio: 1.5,
@@ -75,6 +102,8 @@ class DetailInfo extends StatelessWidget {
             _buildProductDimension("LARGO", product.depth),
           ],
         ),
+
+        /// Botón de acción
         SliverToBoxAdapter(
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 20),
@@ -82,6 +111,8 @@ class DetailInfo extends StatelessWidget {
             child: GeneralButton(
               text: "Añadir al carrito",
               onPressed: () {
+                // Muestra un diálogo indicando que la funcionalidad
+                // aún no está implementada.
                 NoImplemented.showNotImplementedDialog(context);
               },
             ),
@@ -91,11 +122,17 @@ class DetailInfo extends StatelessWidget {
     );
   }
 
+  /// Construye un widget que muestra una dimensión del producto.
+  ///
+  /// Parámetros:
+  /// - [label]: Nombre de la dimensión (ej: ANCHO).
+  /// - [value]: Valor numérico en centímetros.
   Widget _buildProductDimension(String label, int value) {
     return Builder(
       builder: (context) {
         final textTheme = Theme.of(context).textTheme;
         final colors = Theme.of(context).colorScheme;
+
         return Column(
           children: [
             Text(
@@ -115,6 +152,11 @@ class DetailInfo extends StatelessWidget {
     );
   }
 
+  /// Construye un chip personalizado para representar un tag del producto.
+  ///
+  /// Parámetros:
+  /// - [label]: Texto del tag.
+  /// - [color]: Color base del chip.
   Widget _buildCustomChip(String label, Color color) {
     return Container(
       margin: EdgeInsets.only(left: 10),
