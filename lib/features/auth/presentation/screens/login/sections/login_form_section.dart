@@ -10,7 +10,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-// Sección del formulario de login, con validaciones personalizadas para email y password
+/// Sección que contiene el formulario de inicio de sesión.
+///
+/// Esta clase:
+/// - Construye dinámicamente los campos del formulario.
+/// - Aplica validaciones personalizadas para email y contraseña.
+/// - Muestra errores de validación en tiempo real.
+/// - Ejecuta el proceso de autenticación mediante [AuthCubit].
 class LoginFormSection extends StatefulWidget {
   const LoginFormSection({super.key});
 
@@ -19,13 +25,22 @@ class LoginFormSection extends StatefulWidget {
 }
 
 class _LoginFormSectionState extends State<LoginFormSection> {
+  /// Clave global para gestionar el estado del formulario.
   final _formKey = GlobalKey<FormBuilderState>();
+
+  /// Lista de errores actuales de validación de la contraseña.
   List<String> _passwordErrors = <String>[];
+
+  /// Indica si el usuario ha comenzado a modificar el campo contraseña.
   bool _isChangePassword = false;
 
   @override
   Widget build(BuildContext context) {
-    // Configuración de los campos del formulario de login, con validadores personalizados
+    /// Configuración dinámica de los campos del formulario.
+    ///
+    /// Incluye:
+    /// - Campo de email con validador personalizado.
+    /// - Campo de contraseña con validación avanzada en tiempo real.
     final List<FormItem> configurationFormLogin = [
       FormItemString(
         name: "email",
@@ -51,7 +66,12 @@ class _LoginFormSectionState extends State<LoginFormSection> {
       ),
     ];
 
-    // Función para manejar el submit del formulario, validando los campos
+    /// Maneja el envío del formulario.
+    ///
+    /// - Guarda el estado actual.
+    /// - Ejecuta validaciones.
+    /// - Si todo es correcto, llama al método
+    ///   `loginWithCredentials` del [AuthCubit].
     void onSubmit() {
       _formKey.currentState?.save();
       if (!_formKey.currentState!.validate()) {
@@ -92,7 +112,11 @@ class _LoginFormSectionState extends State<LoginFormSection> {
     );
   }
 
-  // Función para mostrar los errores de validación de la contraseña, indicando qué requisitos no se cumplen
+  /// Construye la lista visual de errores de validación
+  /// de la contraseña.
+  ///
+  /// Cada requisito se muestra dinámicamente indicando
+  /// si se cumple o no mediante íconos y colores.
   Widget _buildPasswordValidationErrors(
     List<String> errors,
     BuildContext context,
@@ -128,7 +152,16 @@ class _LoginFormSectionState extends State<LoginFormSection> {
     );
   }
 
-  // Función para construir un widget que muestre si un requisito de validación se cumple o no, con un ícono y mensaje correspondiente
+  /// Construye un widget que representa el estado
+  /// de un requisito de validación.
+  ///
+  /// Si el requisito no se cumple:
+  /// - Se muestra un ícono circular.
+  ///
+  /// Si el requisito se cumple:
+  /// - Se muestra un ícono de check.
+  ///
+  /// [isError] indica si el requisito aún no se cumple.
   Widget _buildCheckError(
     bool isError,
     Color successColor,
@@ -151,7 +184,6 @@ class _LoginFormSectionState extends State<LoginFormSection> {
             size: 10,
           ),
         ),
-
         SizedBox(width: 4),
         Text(message),
       ],

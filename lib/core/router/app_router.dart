@@ -16,49 +16,78 @@ import 'package:evertec_technical_test/features/settings/presentation/screens/se
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-// Router de la aplicación con GoRouter
+/// Router principal de la aplicación configurado con [GoRouter].
+///
+/// Responsabilidades:
+/// - Definir las rutas principales.
+/// - Gestionar redirecciones según el estado de autenticación.
+/// - Escuchar cambios del [AuthCubit] para refrescar navegación.
+/// - Inyectar dependencias mediante [InjectorContainer].
 final appRouter = GoRouter(
+  /// Ruta inicial de la aplicación.
   initialLocation: RoutePaths.splash,
+
+  /// Escucha los cambios del AuthCubit para
+  /// recalcular automáticamente las redirecciones.
   refreshListenable: GoRouterRefreshStream(
     InjectorContainer.instance<AuthCubit>().stream,
   ),
+
+  /// Lógica de redirección global basada en el estado de autenticación.
   redirect: (context, state) {
     final instance = InjectorContainer.instance;
 
     final authState = instance<AuthCubit>().state;
     final isLogginIn = state.fullPath == RoutePaths.login;
+    final isSplash = state.fullPath == RoutePaths.splash;
 
-    final isAAuthUnauthenticated = authState.mapOrNull(
-      unauthenticated: (_) => true,
+    /// Determina si el usuario NO está autenticado.
+    final isAAuthUnauthenticated = authState.maybeWhen(
+      unauthenticated: () => true,
+      initial: () => true,
       error: (_) => true,
+      orElse: () => false,
     );
 
-    if (isAAuthUnauthenticated == true) {
-      return isLogginIn ? null : RoutePaths.login;
+    /// Si el usuario no está autenticado e intenta acceder
+    /// a una ruta protegida, se redirige al login.
+    if (isAAuthUnauthenticated && !isLogginIn && !isSplash) {
+      return RoutePaths.login;
     }
 
-    final isAuthAuthenticated = authState.mapOrNull(authenticated: (_) => true);
+    /// Determina si el usuario está autenticado.
+    final isAuthAuthenticated = authState.maybeWhen(
+      authenticated: (_) => true,
+      orElse: () => false,
+    );
 
-    if (isAuthAuthenticated == true && isLogginIn) {
+    /// Si el usuario ya está autenticado y está en login,
+    /// se redirige automáticamente al home.
+    if (isAuthAuthenticated && isLogginIn) {
       return RoutePaths.home;
     }
 
     return null;
   },
-  // Rutas principales de la aplicación
+
+  /// Definición de rutas principales.
   routes: [
-    // Ruta de splash screen
+    /// Ruta de Splash Screen.
     GoRoute(
       path: RoutePaths.splash,
       name: RouteNames.splash.name,
       builder: (context, state) => const SplashScreen(),
     ),
-    // Ruta de login
+
+    /// Ruta de Login.
     GoRoute(
       path: RoutePaths.login,
       name: RouteNames.login.name,
       builder: (context, state) => const LoginScreen(),
     ),
+
+    /// ShellRoute que envuelve las rutas principales
+    /// con un layout común (ej: navegación inferior).
     ShellRoute(
       builder: (context, state, child) {
         return BlocProvider(
@@ -67,7 +96,7 @@ final appRouter = GoRouter(
         );
       },
       routes: [
-        // Ruta de home
+        /// Ruta Home protegida.
         GoRoute(
           path: RoutePaths.home,
           name: RouteNames.home.name,
@@ -78,13 +107,18 @@ final appRouter = GoRouter(
         ),
       ],
     ),
-    // Ruta de configuración
+
+    /// Ruta de configuración.
     GoRoute(
       path: RoutePaths.settings,
       name: RouteNames.settings.name,
       builder: (context, state) => SettingsScreen(),
     ),
-    // Ruta de detalle
+
+    /// Ruta de detalle de producto.
+    ///
+    /// Recibe el parámetro dinámico `id`
+    /// y carga la información del producto correspondiente.
     GoRoute(
       path: RoutePaths.detail,
       name: RouteNames.detail.name,
