@@ -84,7 +84,7 @@ class AuthCubit extends Cubit<AuthState> {
   /// 2. Ejecuta el caso de uso de cierre de sesión.
   /// 3. Si es exitoso, emite estado no autenticado.
   /// 4. Si ocurre un error, emite estado de error.
-  void logout() async {
+  Future<void> logout() async {
     emit(AuthState.loading());
     try {
       await _singOut();

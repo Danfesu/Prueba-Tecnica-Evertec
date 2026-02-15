@@ -69,8 +69,6 @@ class SliverCarruselSection extends StatelessWidget {
 
             /// Animación de entrada desde la derecha
             FadeInRight(
-              // Key única para forzar reconstrucción cuando cambian los productos
-              key: ValueKey('carrusel-${products.length}-${products.hashCode}'),
               child: Carrusel(
                 // Key basada en la lista para asegurar refresco correcto
                 key: ValueKey(

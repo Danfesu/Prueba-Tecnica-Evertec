@@ -3,7 +3,6 @@ import 'package:evertec_technical_test/features/settings/presentation/screens/se
 import 'package:evertec_technical_test/features/settings/presentation/screens/sections/settings_avatar.dart';
 import 'package:evertec_technical_test/features/settings/presentation/screens/sections/settings_options.dart';
 import 'package:evertec_technical_test/features/settings/presentation/screens/sections/settings_theme.dart';
-import 'package:evertec_technical_test/features/shared/extesions/snackbar_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -19,8 +18,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 ///
 /// Está construida con un [CustomScrollView] para permitir
 /// una estructura basada en slivers.
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  bool isClosing = false;
 
   @override
   Widget build(BuildContext context) {
@@ -85,8 +91,54 @@ class SettingsScreen extends StatelessWidget {
   Widget _buildLogoutButton(BuildContext context) {
     return FilledButton.icon(
       onPressed: () {
-        context.hideSnackBar(); // limpiar snackbars
-        context.read<AuthCubit>().logout();
+        // mostramos modal de confirmación
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: isClosing
+                  ? Center(child: CircularProgressIndicator())
+                  : const Text('¿Quieres cerrar sesión?'),
+              actionsOverflowDirection: VerticalDirection.down,
+              actions: isClosing
+                  ? null
+                  : [
+                      SizedBox(
+                        width: double.infinity,
+                        child: FilledButton(
+                          onPressed: () async {
+                            // 1. Capturamos lo que necesitamos del contexto ANTES del await
+                            final messenger = ScaffoldMessenger.of(context);
+                            final authCubit = context.read<AuthCubit>();
+                            final navigator = Navigator.of(context);
+
+                            setState(() => isClosing = true);
+
+                            // 2. Operación asíncrona
+                            await authCubit.logout();
+
+                            // 3. Usamos las referencias guardadas
+                            messenger.hideCurrentSnackBar();
+                            navigator.pop();
+                          },
+                          child: const Text('Aceptar'),
+                        ),
+                      ),
+                      SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            side: BorderSide(color: Colors.blue, width: 2.0),
+                            foregroundColor: Colors.blue,
+                          ),
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text('Cancelar'),
+                        ),
+                      ),
+                    ],
+            );
+          },
+        );
       },
       label: Text("Cerrar sesión"),
       icon: Icon(Icons.logout),
