@@ -4,7 +4,18 @@ import 'package:evertec_technical_test/features/home/data/models/product_models.
 import 'package:evertec_technical_test/features/home/domain/entities/product_domain.dart';
 import 'package:evertec_technical_test/features/home/domain/entities/tag_domain.dart';
 
+/// Mapper responsable de transformar objetos entre
+/// las distintas capas de la aplicación:
+///
+/// - Data (Model)
+/// - Domain (Entidad de negocio)
+/// - Persistence (Entity / Companion de Drift)
+///
+/// Ayuda a mantener el desacoplamiento entre capas
+/// siguiendo principios de Clean Architecture.
 class ProductMapper {
+  /// Convierte un [ProductModel] (capa de datos / API)
+  /// a un [Product] (capa de dominio).
   static Product modelToDomain(ProductModel model) {
     return Product(
       id: model.id,
@@ -20,6 +31,9 @@ class ProductMapper {
     );
   }
 
+  /// Convierte un [Product] (capa de dominio)
+  /// en un [ProductsCompanion] (objeto requerido por Drift
+  /// para inserciones o actualizaciones en base de datos).
   static ProductsCompanion domainToCompanion(Product product) {
     return ProductsCompanion(
       id: Value(product.id),
@@ -34,7 +48,13 @@ class ProductMapper {
     );
   }
 
-  // Convertir de Entity a Model
+  /// Convierte un [ProductEntity] (representación almacenada en base de datos)
+  /// en un [Product] (capa de dominio).
+  ///
+  /// Nota:
+  /// - Los tags no se asignan aquí.
+  /// - Se inicializan como lista vacía porque normalmente
+  ///   se obtienen en una consulta adicional.
   static Product entityToDomain(ProductEntity entity) {
     return Product(
       id: entity.id,
