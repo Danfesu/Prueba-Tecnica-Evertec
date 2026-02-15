@@ -128,6 +128,11 @@ class AppDatabase extends _$AppDatabase {
     )..where((tbl) => tbl.productId.equals(productId))).get();
   }
 
+  /// Elimina todos los productos del caché.
+  Future<void> clearAllTags() async {
+    await delete(tags).go();
+  }
+
   // ══════════════════════════════════════════════════════════════
   // QUERIES COMBINADAS (JOINS)
   // ══════════════════════════════════════════════════════════════

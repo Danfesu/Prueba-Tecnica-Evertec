@@ -76,6 +76,7 @@ class ProductsLocalDataSourceImpl extends ProductLocalDataSource {
     try {
       // 1. Limpiar productos antiguos.
       await database.clearAllProducts();
+      await database.clearAllTags();
 
       // 2. Convertir productos de dominio a companions de base de datos.
       final productsCompanions = products
@@ -115,6 +116,7 @@ class ProductsLocalDataSourceImpl extends ProductLocalDataSource {
     try {
       // Eliminar todos los productos almacenados.
       await database.clearAllProducts();
+      await database.clearAllTags();
     } catch (e) {
       throw CacheException('Error al limpiar caché: $e');
     }
