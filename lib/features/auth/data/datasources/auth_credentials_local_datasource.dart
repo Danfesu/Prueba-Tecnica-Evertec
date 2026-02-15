@@ -13,7 +13,7 @@ class AuthCredentialsLocalDatasource extends AuthCredentialsDataSource {
   final Map<String, String> _userAdmin = {
     "id": "1",
     "email": "admin@evertec.com",
-    "password": "admin123",
+    "password": "Admin123*",
     "name": "Admin User",
     "token": "fake_token_1234567890",
   };
@@ -36,5 +36,13 @@ class AuthCredentialsLocalDatasource extends AuthCredentialsDataSource {
       );
     }
     throw Exception("Invalid credentials");
+  }
+
+  @override
+  Future<void> singOut() async {
+    await Future.delayed(
+      const Duration(seconds: 1), // Simula una llamada a la API
+    );
+    secureStorage.delete("token");
   }
 }

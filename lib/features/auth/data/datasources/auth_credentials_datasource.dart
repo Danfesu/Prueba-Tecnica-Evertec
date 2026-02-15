@@ -4,4 +4,5 @@ import 'package:evertec_technical_test/features/auth/domain/valueobjects/passwor
 
 abstract class AuthCredentialsDataSource {
   Future<AppUser> signInWithCredential(Email email, Password password);
+  Future<void> singOut();
 }

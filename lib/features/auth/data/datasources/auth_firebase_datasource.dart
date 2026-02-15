@@ -53,6 +53,7 @@ class AuthFirebaseDatasource extends AuthGoogleDataSource {
     try {
       await _auth.signOut();
       await _googleSignIn.signOut();
+      secureStorage.delete("token");
     } on FirebaseException {
       throw Exception("firebase error");
     }

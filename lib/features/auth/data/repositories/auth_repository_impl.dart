@@ -24,6 +24,7 @@ class AuthRepositoryImpl extends AuthRepository {
   Future<void> signOut() async {
     try {
       await datasource.signOut();
+      await credentialsDataSource.singOut();
     } catch (e) {
       throw Exception();
     }
