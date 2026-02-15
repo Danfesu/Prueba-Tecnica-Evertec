@@ -19,7 +19,7 @@ class AuthFirebaseDatasource extends AuthGoogleDataSource {
   Future<AppUser> signInWithGoogle() async {
     try {
       await _googleSignIn.initialize(
-        serverClientId: Environments.clientFirbaseClientId,
+        serverClientId: Environments.firebaseClientId,
       );
       final googleUser = await _googleSignIn.authenticate();
       final googleAuth = googleUser.authentication;

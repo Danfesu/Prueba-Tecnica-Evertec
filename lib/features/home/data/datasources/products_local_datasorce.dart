@@ -1,8 +1,8 @@
 import 'package:evertec_technical_test/core/databases/app_database.dart';
 import 'package:evertec_technical_test/core/errors/exceptions.dart';
+import 'package:evertec_technical_test/features/home/data/mappers/product_mapper.dart';
 import 'package:evertec_technical_test/features/home/domain/entities/product_domain.dart';
-
-import 'package:drift/drift.dart';
+import 'package:evertec_technical_test/features/home/domain/entities/tag_domain.dart';
 
 abstract class ProductLocalDataSource {
   Future<List<Product>> getCachedProducts();
@@ -27,7 +27,9 @@ class ProductsLocalDataSourceImpl extends ProductLocalDataSource {
         throw CacheException('No hay datos en caché');
       }
 
-      return postEntities.map((entity) => _fromEntity(entity)).toList();
+      return postEntities
+          .map((entity) => ProductMapper.entityToDomain(entity))
+          .toList();
     } catch (e) {
       throw CacheException('Error al obtener datos del caché: $e');
     }
@@ -40,10 +42,22 @@ class ProductsLocalDataSourceImpl extends ProductLocalDataSource {
       await database.clearAllProducts();
 
       // Insertar nuevos posts
-      final companions = products
-          .map((product) => _toCompanion(product))
+      final productsCompanions = products
+          .map((product) => ProductMapper.domainToCompanion(product))
           .toList();
-      await database.insertProducts(companions);
+      await database.insertProducts(productsCompanions);
+
+      // 3. Insertar tags para cada producto
+      for (final product in products) {
+        if (product.tags.isNotEmpty) {
+          await database.insertTags(
+            product.id,
+            product.tags.map((tag) => tag.name).toList(),
+          );
+        }
+      }
+
+      // Insertar
     } catch (e) {
       throw CacheException('Error al guardar en caché: $e');
     }
@@ -67,37 +81,6 @@ class ProductsLocalDataSourceImpl extends ProductLocalDataSource {
     }
   }
 
-  // Convertir de Entity a Model
-  Product _fromEntity(ProductEntity entity) {
-    return Product(
-      id: entity.id,
-      title: entity.title,
-      description: entity.description,
-      category: entity.category,
-      price: entity.price.toDouble(),
-      width: entity.width,
-      height: entity.height,
-      depth: entity.depth,
-      imageUrl: entity.imageUrl,
-      tags: [],
-    );
-  }
-
-  // Convertir de Model a Companion
-  ProductsCompanion _toCompanion(Product model) {
-    return ProductsCompanion(
-      id: Value(model.id),
-      title: Value(model.title),
-      description: Value(model.description),
-      category: Value(model.category),
-      price: Value(model.price.toInt()),
-      width: Value(model.width),
-      height: Value(model.height),
-      depth: Value(model.depth),
-      imageUrl: Value(model.imageUrl),
-    );
-  }
-
   @override
   Future<Product?> getCachedProductById(int id) async {
     try {
@@ -107,7 +90,14 @@ class ProductsLocalDataSourceImpl extends ProductLocalDataSource {
         throw CacheException('No hay datos en caché');
       }
 
-      return _fromEntity(product);
+      final tags = await database.getTagsByProduct(product.id);
+
+      Product produstDomain = ProductMapper.entityToDomain(product);
+      produstDomain.tags = tags
+          .map((tagEntity) => Tag(id: tagEntity.id, name: tagEntity.name))
+          .toList();
+
+      return produstDomain;
     } catch (e) {
       throw CacheException('Error al obtener datos del caché: $e');
     }
