@@ -2,12 +2,23 @@ import 'package:evertec_technical_test/features/settings/presentation/widgets/li
 import 'package:evertec_technical_test/features/shared/widgets/no_implemented.dart';
 import 'package:flutter/material.dart';
 
+/// Widget que muestra las opciones de configuración de la aplicación.
+///
+/// Contiene varias opciones representadas con [CustomListTile]:
+/// - Editar Perfil
+/// - Notificaciones
+/// - Privacidad
+/// - Idioma de la aplicación
+///
+/// Actualmente todas las opciones muestran un diálogo de "No implementado"
+/// mediante [NoImplemented.showNotImplementedDialog].
 class SettingsOptions extends StatelessWidget {
   const SettingsOptions({super.key});
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(10),

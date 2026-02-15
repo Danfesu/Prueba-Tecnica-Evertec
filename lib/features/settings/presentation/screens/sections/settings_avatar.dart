@@ -3,6 +3,13 @@ import 'package:evertec_technical_test/features/auth/presentation/cubits/auth_st
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+/// Widget que muestra el avatar del usuario en la pantalla de configuración.
+///
+/// Este widget utiliza [BlocBuilder] para escuchar el estado de [AuthCubit] y
+/// mostrar la información del usuario autenticado. Incluye:
+/// - Un [CircleAvatar] con un ícono de persona.
+/// - Nombre del usuario.
+/// - Correo electrónico del usuario.
 class SettingsAvatar extends StatelessWidget {
   const SettingsAvatar({super.key});
 
@@ -10,6 +17,7 @@ class SettingsAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state) {
+        // Extrae la información del usuario autenticado, si existe
         final userAuthenticated = state.mapOrNull(authenticated: (s) => s);
 
         return Center(
