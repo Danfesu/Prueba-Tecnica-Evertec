@@ -61,12 +61,14 @@ dependencies:
   smooth_page_indicator: ^2.0.1
 
 dev_dependencies:
+  bloc_test: ^10.0.0
   build_runner: ^2.11.1
   drift_dev: ^2.31.0
   flutter_lints: ^6.0.0
   flutter_test:
     sdk: flutter
-  freezed: ^3.2.5
+  freezed: 3.2.3
+  mocktail: ^1.0.4
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

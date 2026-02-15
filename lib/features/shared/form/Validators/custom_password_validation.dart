@@ -7,6 +7,7 @@ class CustomPasswordValidation {
     String? errorMessage,
   }) {
     return ValidatorStringBuilder()
+        .requiredField("Campo requerido")
         .regex(
           regex ??
               r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',

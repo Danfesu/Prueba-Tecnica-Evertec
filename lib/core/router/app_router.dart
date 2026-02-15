@@ -101,7 +101,9 @@ final appRouter = GoRouter(
           path: RoutePaths.home,
           name: RouteNames.home.name,
           builder: (context, state) => BlocProvider(
-            create: (_) => InjectorContainer.instance<ProductsCubit>(),
+            create: (_) => InjectorContainer.instance<ProductsCubit>()
+              ..initConnectivityListener()
+              ..loadProducts(),
             child: const HomeScreen(),
           ),
         ),
