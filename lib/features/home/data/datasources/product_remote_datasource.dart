@@ -19,7 +19,7 @@ class ProductRemoteDatasourceImpl implements ProductsRemoteDatasource {
       final response = await apiClient.dio.get('/products');
       final data = ProductModels.fromJson(response.data);
       return data.products
-          .map((product) => ProductMapper.fromModel(product))
+          .map((product) => ProductMapper.modelToDomain(product))
           .toList();
     } catch (e) {
       // Manejo de errores
@@ -32,7 +32,7 @@ class ProductRemoteDatasourceImpl implements ProductsRemoteDatasource {
     try {
       final response = await apiClient.dio.get('/products/$id');
       final data = ProductModel.fromJson(response.data);
-      return ProductMapper.fromModel(data);
+      return ProductMapper.modelToDomain(data);
     } catch (e) {
       // Manejo de errores
       rethrow;

@@ -544,7 +544,7 @@ class ProductsCompanion extends UpdateCompanion<ProductEntity> {
   }
 }
 
-class $TagsTable extends Tags with TableInfo<$TagsTable, CacheMetadataEntity> {
+class $TagsTable extends Tags with TableInfo<$TagsTable, TagEntity> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -592,7 +592,7 @@ class $TagsTable extends Tags with TableInfo<$TagsTable, CacheMetadataEntity> {
   static const String $name = 'tags';
   @override
   VerificationContext validateIntegrity(
-    Insertable<CacheMetadataEntity> instance, {
+    Insertable<TagEntity> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -622,9 +622,9 @@ class $TagsTable extends Tags with TableInfo<$TagsTable, CacheMetadataEntity> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  CacheMetadataEntity map(Map<String, dynamic> data, {String? tablePrefix}) {
+  TagEntity map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return CacheMetadataEntity(
+    return TagEntity(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}id'],
@@ -646,12 +646,16 @@ class $TagsTable extends Tags with TableInfo<$TagsTable, CacheMetadataEntity> {
   }
 }
 
-class CacheMetadataEntity extends DataClass
-    implements Insertable<CacheMetadataEntity> {
+class TagEntity extends DataClass implements Insertable<TagEntity> {
+  /// ID autoincremental del tag.
   final int id;
+
+  /// ID del producto asociado (foreign key).
   final int productId;
+
+  /// Nombre del tag (ej: "oferta", "nuevo", "destacado").
   final String name;
-  const CacheMetadataEntity({
+  const TagEntity({
     required this.id,
     required this.productId,
     required this.name,
@@ -673,12 +677,12 @@ class CacheMetadataEntity extends DataClass
     );
   }
 
-  factory CacheMetadataEntity.fromJson(
+  factory TagEntity.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return CacheMetadataEntity(
+    return TagEntity(
       id: serializer.fromJson<int>(json['id']),
       productId: serializer.fromJson<int>(json['productId']),
       name: serializer.fromJson<String>(json['name']),
@@ -694,14 +698,13 @@ class CacheMetadataEntity extends DataClass
     };
   }
 
-  CacheMetadataEntity copyWith({int? id, int? productId, String? name}) =>
-      CacheMetadataEntity(
-        id: id ?? this.id,
-        productId: productId ?? this.productId,
-        name: name ?? this.name,
-      );
-  CacheMetadataEntity copyWithCompanion(TagsCompanion data) {
-    return CacheMetadataEntity(
+  TagEntity copyWith({int? id, int? productId, String? name}) => TagEntity(
+    id: id ?? this.id,
+    productId: productId ?? this.productId,
+    name: name ?? this.name,
+  );
+  TagEntity copyWithCompanion(TagsCompanion data) {
+    return TagEntity(
       id: data.id.present ? data.id.value : this.id,
       productId: data.productId.present ? data.productId.value : this.productId,
       name: data.name.present ? data.name.value : this.name,
@@ -710,7 +713,7 @@ class CacheMetadataEntity extends DataClass
 
   @override
   String toString() {
-    return (StringBuffer('CacheMetadataEntity(')
+    return (StringBuffer('TagEntity(')
           ..write('id: $id, ')
           ..write('productId: $productId, ')
           ..write('name: $name')
@@ -723,13 +726,13 @@ class CacheMetadataEntity extends DataClass
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is CacheMetadataEntity &&
+      (other is TagEntity &&
           other.id == this.id &&
           other.productId == this.productId &&
           other.name == this.name);
 }
 
-class TagsCompanion extends UpdateCompanion<CacheMetadataEntity> {
+class TagsCompanion extends UpdateCompanion<TagEntity> {
   final Value<int> id;
   final Value<int> productId;
   final Value<String> name;
@@ -744,7 +747,7 @@ class TagsCompanion extends UpdateCompanion<CacheMetadataEntity> {
     required String name,
   }) : productId = Value(productId),
        name = Value(name);
-  static Insertable<CacheMetadataEntity> custom({
+  static Insertable<TagEntity> custom({
     Expression<int>? id,
     Expression<int>? productId,
     Expression<String>? name,
@@ -835,8 +838,9 @@ final class $$ProductsTableReferences
     extends BaseReferences<_$AppDatabase, $ProductsTable, ProductEntity> {
   $$ProductsTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static MultiTypedResultKey<$TagsTable, List<CacheMetadataEntity>>
-  _tagsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+  static MultiTypedResultKey<$TagsTable, List<TagEntity>> _tagsRefsTable(
+    _$AppDatabase db,
+  ) => MultiTypedResultKey.fromTable(
     db.tags,
     aliasName: $_aliasNameGenerator(db.products.id, db.tags.productId),
   );
@@ -1142,7 +1146,7 @@ class $$ProductsTableTableManager
                     await $_getPrefetchedData<
                       ProductEntity,
                       $ProductsTable,
-                      CacheMetadataEntity
+                      TagEntity
                     >(
                       currentTable: table,
                       referencedTable: $$ProductsTableReferences._tagsRefsTable(
@@ -1190,7 +1194,7 @@ typedef $$TagsTableUpdateCompanionBuilder =
     });
 
 final class $$TagsTableReferences
-    extends BaseReferences<_$AppDatabase, $TagsTable, CacheMetadataEntity> {
+    extends BaseReferences<_$AppDatabase, $TagsTable, TagEntity> {
   $$TagsTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
   static $ProductsTable _productIdTable(_$AppDatabase db) => db.products
@@ -1339,14 +1343,14 @@ class $$TagsTableTableManager
         RootTableManager<
           _$AppDatabase,
           $TagsTable,
-          CacheMetadataEntity,
+          TagEntity,
           $$TagsTableFilterComposer,
           $$TagsTableOrderingComposer,
           $$TagsTableAnnotationComposer,
           $$TagsTableCreateCompanionBuilder,
           $$TagsTableUpdateCompanionBuilder,
-          (CacheMetadataEntity, $$TagsTableReferences),
-          CacheMetadataEntity,
+          (TagEntity, $$TagsTableReferences),
+          TagEntity,
           PrefetchHooks Function({bool productId})
         > {
   $$TagsTableTableManager(_$AppDatabase db, $TagsTable table)
@@ -1431,14 +1435,14 @@ typedef $$TagsTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $TagsTable,
-      CacheMetadataEntity,
+      TagEntity,
       $$TagsTableFilterComposer,
       $$TagsTableOrderingComposer,
       $$TagsTableAnnotationComposer,
       $$TagsTableCreateCompanionBuilder,
       $$TagsTableUpdateCompanionBuilder,
-      (CacheMetadataEntity, $$TagsTableReferences),
-      CacheMetadataEntity,
+      (TagEntity, $$TagsTableReferences),
+      TagEntity,
       PrefetchHooks Function({bool productId})
     >;
 

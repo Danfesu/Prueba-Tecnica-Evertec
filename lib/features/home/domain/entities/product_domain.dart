@@ -10,7 +10,7 @@ class Product {
   final int height;
   final int depth;
   final String imageUrl;
-  final List<Tag> tags;
+  List<Tag> tags;
 
   Product({
     required this.id,
