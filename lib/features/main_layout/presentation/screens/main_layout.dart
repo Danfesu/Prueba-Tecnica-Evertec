@@ -9,8 +9,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+/// Layout principal de la aplicación.
+///
+/// Contiene:
+/// - AppBar superior.
+/// - NavigationDrawer lateral.
+/// - Contenido dinámico recibido por parámetro (child).
+///
+/// Este layout se reutiliza para las distintas pantallas principales.
 class MainLayout extends StatelessWidget {
   final Widget child;
+
+  /// Key global para controlar el estado del Scaffold (abrir/cerrar drawer).
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   MainLayout({super.key, required this.child});
@@ -25,6 +35,12 @@ class MainLayout extends StatelessWidget {
     );
   }
 
+  /// Construye el NavigationDrawer lateral.
+  ///
+  /// Escucha el estado del LayoutCubit para:
+  /// - Mostrar los módulos disponibles.
+  /// - Marcar el módulo seleccionado según la ruta actual.
+  /// - Navegar a la ruta correspondiente al seleccionar un item.
   Widget _buildDrawer(BuildContext context) {
     return BlocBuilder<LayoutCubit, LayoutState>(
       builder: (context, state) {
@@ -34,6 +50,7 @@ class MainLayout extends StatelessWidget {
           loaded: (pages) {
             final location = GoRouterState.of(context).uri.toString();
 
+            // Determina cuál página está seleccionada según la ruta actual
             final selectedIndex = pages.indexWhere(
               (p) => location.startsWith(p.route),
             );
@@ -45,6 +62,8 @@ class MainLayout extends StatelessWidget {
                 _buildHeaderDrawer(context),
                 SizedBox(width: double.infinity, child: Divider()),
                 SizedBox(height: 5),
+
+                // Genera dinámicamente los items del drawer
                 for (int i = 0; i < pages.length; i++)
                   DrawerItem(
                     icon: pages[i].icon,
@@ -52,8 +71,11 @@ class MainLayout extends StatelessWidget {
                     selected: i == selectedIndex,
                     onTap: () async {
                       final router = GoRouter.of(context);
+
+                      // Cierra el drawer antes de navegar
                       scaffoldKey.currentState?.closeDrawer();
                       await Future.delayed(const Duration(milliseconds: 250));
+
                       router.go(pages[i].route);
                     },
                   ),
@@ -66,6 +88,10 @@ class MainLayout extends StatelessWidget {
     );
   }
 
+  /// Construye el header del drawer.
+  ///
+  /// Muestra la información del usuario autenticado
+  /// (nombre y correo electrónico).
   Widget _buildHeaderDrawer(BuildContext context) {
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state) {
@@ -102,6 +128,9 @@ class MainLayout extends StatelessWidget {
     );
   }
 
+  /// Construye el footer del drawer.
+  ///
+  /// Muestra información de versión y build de la aplicación.
   Widget _buildFooterDrawer(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -137,6 +166,12 @@ class MainLayout extends StatelessWidget {
     );
   }
 
+  /// Construye el AppBar principal.
+  ///
+  /// Incluye:
+  /// - Botón para abrir el drawer.
+  /// - Botón de notificaciones (no implementado).
+  /// - Botón para navegar a la pantalla de configuración.
   PreferredSizeWidget _buidAppBar(BuildContext context) {
     return AppBar(
       forceMaterialTransparency: true,

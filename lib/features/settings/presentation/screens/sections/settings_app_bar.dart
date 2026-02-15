@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+/// AppBar personalizado para la pantalla de configuración.
+///
+/// Este AppBar se muestra como un [SliverAppBar] y permite:
+/// - Navegar hacia atrás con el botón de flecha.
+/// - Mostrar el título "Configuración".
+/// - Mostrar un icono de ayuda con un [Tooltip] que explica la funcionalidad de la pantalla.
 class SettingsAppBar extends StatefulWidget implements PreferredSizeWidget {
   const SettingsAppBar({super.key});
 
+  /// Altura preferida del AppBar.
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 
@@ -12,6 +19,7 @@ class SettingsAppBar extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _SettingsAppBarState extends State<SettingsAppBar> {
+  /// Key para controlar la visibilidad del [Tooltip].
   final key = GlobalKey<TooltipState>();
 
   @override
@@ -20,6 +28,7 @@ class _SettingsAppBarState extends State<SettingsAppBar> {
       backgroundColor: Colors.transparent,
       leading: IconButton(
         onPressed: () {
+          // Regresa a la pantalla anterior en la navegación
           context.pop();
         },
         icon: Icon(Icons.arrow_back_ios),
@@ -40,6 +49,7 @@ class _SettingsAppBarState extends State<SettingsAppBar> {
           ),
           child: IconButton(
             onPressed: () {
+              // Muestra el Tooltip cuando se presiona el botón de ayuda
               key.currentState?.ensureTooltipVisible();
             },
             icon: Icon(Icons.help_rounded),
