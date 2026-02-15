@@ -43,47 +43,93 @@ import 'package:evertec_technical_test/features/settings/presentation/screens/se
 /// 4. Home → Settings → Home (configuración)
 /// Router de la aplicación con GoRouter
 final appRouter = GoRouter(
+  // ══════════════════════════════════════════════════════════════
+  // CONFIGURACIÓN INICIAL
+  // ══════════════════════════════════════════════════════════════
+
+  /// Ruta inicial al abrir la app.
   initialLocation: RoutePaths.splash,
+  // ══════════════════════════════════════════════════════════════
+  // REFRESH AUTOMÁTICO
+  // ══════════════════════════════════════════════════════════════
+
+  /// Escucha cambios en el estado de autenticación.
+  ///
+  /// Cuando cambia (login/logout), ejecuta el redirect automáticamente.
   refreshListenable: GoRouterRefreshStream(
     InjectorContainer.instance<AuthCubit>().stream,
   ),
+  // ══════════════════════════════════════════════════════════════
+  // REDIRECCIÓN GLOBAL (Auth Guard)
+  // ══════════════════════════════════════════════════════════════
+
+  /// Maneja la lógica de redirección según estado de autenticación.
+  ///
+  /// **Casos:**
+  /// 1. Usuario no autenticado → Redirigir a login
+  /// 2. Usuario autenticado en login → Redirigir a home
+  /// 3. Usuario autenticado en otras rutas → Permitir acceso
   redirect: (context, state) {
-    final instance = InjectorContainer.instance;
+    final authCubit = InjectorContainer.instance<AuthCubit>();
+    final authState = authCubit.state;
 
-    final authState = instance<AuthCubit>().state;
-    final isLogginIn = state.fullPath == RoutePaths.login;
+    final currentPath = state.matchedLocation;
+    final isOnLoginPage = currentPath == RoutePaths.login;
+    final isOnSplashPage = currentPath == RoutePaths.splash;
 
-    final isAAuthUnauthenticated = authState.mapOrNull(
-      unauthenticated: (_) => true,
+    // Verificar si el usuario NO está autenticado
+    final isUnauthenticated = authState.maybeWhen(
+      unauthenticated: () => true,
       error: (_) => true,
+      orElse: () => false,
     );
 
-    if (isAAuthUnauthenticated == true) {
-      return isLogginIn ? null : RoutePaths.login;
+    // Usuario no autenticado → Login
+    if (isUnauthenticated && !isOnLoginPage && !isOnSplashPage) {
+      return RoutePaths.login;
     }
 
-    final isAuthAuthenticated = authState.mapOrNull(authenticated: (_) => true);
+    // Usuario autenticado → Redirigir desde login a home
+    final isAuthenticated = authState.maybeWhen(
+      authenticated: (_) => true,
+      orElse: () => false,
+    );
 
-    if (isAuthAuthenticated == true && isLogginIn) {
+    if (isAuthenticated && isOnLoginPage) {
       return RoutePaths.home;
     }
 
+    // Permitir navegación a splash siempre
+    if (isOnSplashPage) {
+      return null;
+    }
+
+    // Sin redirección necesaria
     return null;
   },
-  // Rutas principales de la aplicación
+  // ══════════════════════════════════════════════════════════════
+  // RUTAS
+  // ══════════════════════════════════════════════════════════════
   routes: [
-    // Ruta de splash screen
+    // ══════════════════════════════════════════════════════════
+    // SPLASH SCREEN
+    // ══════════════════════════════════════════════════════════
     GoRoute(
       path: RoutePaths.splash,
       name: RouteNames.splash.name,
       builder: (context, state) => const SplashScreen(),
     ),
-    // Ruta de login
+    // ══════════════════════════════════════════════════════════
+    // AUTH - LOGIN
+    // ══════════════════════════════════════════════════════════
     GoRoute(
       path: RoutePaths.login,
       name: RouteNames.login.name,
       builder: (context, state) => const LoginScreen(),
     ),
+    // ══════════════════════════════════════════════════════════
+    // MAIN LAYOUT (Shell Route con Bottom Navigation)
+    // ══════════════════════════════════════════════════════════
     ShellRoute(
       builder: (context, state, child) {
         return BlocProvider(
@@ -92,7 +138,9 @@ final appRouter = GoRouter(
         );
       },
       routes: [
-        // Ruta de home
+        // ══════════════════════════════════════════════════════
+        // HOME
+        // ══════════════════════════════════════════════════════
         GoRoute(
           path: RoutePaths.home,
           name: RouteNames.home.name,
@@ -103,13 +151,17 @@ final appRouter = GoRouter(
         ),
       ],
     ),
-    // Ruta de configuración
+    // ══════════════════════════════════════════════════════
+    // SETTINGS (dentro del Shell)
+    // ══════════════════════════════════════════════════════
     GoRoute(
       path: RoutePaths.settings,
       name: RouteNames.settings.name,
       builder: (context, state) => SettingsScreen(),
     ),
-    // Ruta de detalle
+    // ══════════════════════════════════════════════════════════
+    // PRODUCT DETAIL (Fuera del Shell - Full Screen)
+    // ══════════════════════════════════════════════════════════
     GoRoute(
       path: RoutePaths.detail,
       name: RouteNames.detail.name,
