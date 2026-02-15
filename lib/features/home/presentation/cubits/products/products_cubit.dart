@@ -42,16 +42,13 @@ class ProductsCubit extends Cubit<ProductsState> {
     this.syncProducts,
     this.networkInfo,
     this.localDataSource,
-  ) : super(const ProductsState.initial()) {
-    _initConnectivityListener();
-    loadProducts();
-  }
+  ) : super(const ProductsState.initial());
 
   /// Inicializa el listener que detecta cambios en la conectividad.
   ///
   /// Permite reaccionar automáticamente cuando el dispositivo
   /// recupera o pierde conexión.
-  void _initConnectivityListener() {
+  void initConnectivityListener() {
     _connectivitySubscription = networkInfo.onConnectivityChanged.listen((
       isConnected,
     ) {
