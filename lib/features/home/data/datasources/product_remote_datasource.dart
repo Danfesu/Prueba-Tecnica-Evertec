@@ -16,7 +16,7 @@ class ProductRemoteDatasourceImpl implements ProductsRemoteDatasource {
   @override
   Future<List<Product>> getAllProducts() async {
     try {
-      final response = await apiClient.dio.get('/products');
+      final response = await apiClient.get('/products');
       final data = ProductModels.fromJson(response.data);
       return data.products
           .map((product) => ProductMapper.modelToDomain(product))
@@ -30,7 +30,7 @@ class ProductRemoteDatasourceImpl implements ProductsRemoteDatasource {
   @override
   Future<Product?> getProductById(int id) async {
     try {
-      final response = await apiClient.dio.get('/products/$id');
+      final response = await apiClient.get('/products/$id');
       final data = ProductModel.fromJson(response.data);
       return ProductMapper.modelToDomain(data);
     } catch (e) {

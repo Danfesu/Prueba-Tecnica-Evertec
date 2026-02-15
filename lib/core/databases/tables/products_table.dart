@@ -32,7 +32,7 @@ class Products extends Table {
 
 /// Tabla de tags/etiquetas de productos.
 ///
-/// Relación muchos-a-muchos entre productos y tags.
+/// Relación uno-a-muchos entre productos y tags.
 ///
 /// **Ejemplo:**
 /// ```sql
